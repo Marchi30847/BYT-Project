@@ -1,3 +1,6 @@
+from src.byt_project.models.terminal import Terminal
+
+
 class Gate:
     def __init__(self, number: int, terminal: Terminal = None, is_open: bool = True):
         self.number = number

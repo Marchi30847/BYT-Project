@@ -1,5 +1,7 @@
 from datetime import datetime
 
+from src.byt_project.models.airline import Airline
+
 
 class Airplane:
     maxServiceYears = 30
