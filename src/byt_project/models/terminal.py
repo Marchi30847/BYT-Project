@@ -1,4 +1,7 @@
+from collections import defaultdict
 from enum import Enum
+
+from src.byt_project.models.gate import Gate
 
 
 class TerminalStatus(Enum):
@@ -17,10 +20,11 @@ class Terminal:
         self.floors_count = floorsCount
         self.area = area
         self.name = name
-        self.gates = []
+        self.gates = dict()
 
     def add_gate(self, gate):
-        self.gates.append(gate)
+        if self.gates[gate.gate_number] is None:
+            self.gates[gate.gate_number] = gate
 
     def get_gate(self, gate_number: str):
         for gate in self.gates:
