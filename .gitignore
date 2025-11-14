@@ -207,4 +207,4 @@ marimo/_lsp/
 __marimo__/
 
 # Databases
-.data/
+.src/byt_project/data/
