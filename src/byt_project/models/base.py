@@ -24,6 +24,7 @@ class BaseModel(Serializable):
     def to_dict(self) -> dict[str, Any]:
         if not is_dataclass(self):
             raise TypeError("BaseModel requires dataclass subclasses")
+
         data = asdict(self)
         data["type"] = self.MODEL_TYPE
         return data

@@ -208,3 +208,4 @@ __marimo__/
 
 # Databases
 .src/byt_project/data/
+.tests/data/
