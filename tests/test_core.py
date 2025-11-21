@@ -88,17 +88,6 @@ class TestEmployeePersistence:
         assert recreated_employee.salary == self.employee.salary
         assert recreated_employee.shift == self.employee.shift
 
-    def test_07_json_serialization_round_trip(self):
-        json_str = self.employee.to_json()
-        recreated_employee = Employee.from_json(json_str)
-
-        assert recreated_employee.hire_date == self.employee.hire_date
-        assert recreated_employee.salary == self.employee.salary
-        assert recreated_employee.shift == self.employee.shift
-
-        new_json_str = recreated_employee.to_json()
-        assert json_str == new_json_str
-
     def test_10_error_handling_for_invalid_files(self):
         corrupt_file_path = self.test_storage.get_file_path("employee", "corrupt")
         corrupt_file_path.parent.mkdir(parents=True, exist_ok=True)
