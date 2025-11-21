@@ -1,5 +1,6 @@
 class Ticket:
     def __init__(self, ticket_type: str, price: float, booking_date, luggage_limit: float):
+        self.flight = None
         self.ticket_type = ticket_type
         self.price = price
         self.booking_date = booking_date
@@ -16,6 +17,13 @@ class Ticket:
 
         self.seat = seat
         seat.assign_ticket(self)
+        
+    def assign_flight(self, flight):
+        if flight.ticket is not None:
+            raise ValueError("This flight is already booked by another ticket")
+        
+        self.flight = flight
+        self.flight.assign_ticket(self)
 
     def book(self):
         if self.seat is None:
