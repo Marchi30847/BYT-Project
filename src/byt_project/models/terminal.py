@@ -11,7 +11,7 @@ class TerminalStatus(Enum):
 
 
 class Terminal:
-    def __init__(self, number: str, capacity: int, status: TerminalStatus, gatesCount: int, floorsCount: int, area: int,  name: str):
+    def __init__(self, number: str, capacity: int, status: TerminalStatus, gatesCount: int, floorsCount: int, area: int):
 
         self.terminal_number = number
         self.capacity = capacity
@@ -19,7 +19,6 @@ class Terminal:
         self.gates_count = gatesCount
         self.floors_count = floorsCount
         self.area = area
-        self.name = name
         self.gates = dict()
 
     def add_gate(self, gate):
