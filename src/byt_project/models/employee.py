@@ -23,11 +23,21 @@ class Employee(BaseModel):
 
     @classmethod
     def from_dict(cls: type[Self], data: Mapping[str, Any]) -> Self:
-        return cls(
-            hire_date=date.fromisoformat(data["hire_date"]),
-            salary=float(data["salary"]),
-            shift=Shift(data["shift"]),
+        kwargs = dict(data)
+        kwargs.pop("type", None)
+        id_ = kwargs.pop("id", None)
+
+        hire_date = date.fromisoformat(kwargs["hire_date"])
+        salary = float(kwargs["salary"])
+        shift = Shift(kwargs["shift"])
+
+        obj = cls(
+            hire_date=hire_date,
+            salary=salary,
+            shift=shift,
         )
+        obj.id = id_
+        return obj
 
     def to_dict(self) -> dict[str, Any]:
         d = super().to_dict()

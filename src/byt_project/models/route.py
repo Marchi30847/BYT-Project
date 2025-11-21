@@ -1,19 +1,30 @@
-from src.byt_project.models.destination import Destination
+from __future__ import annotations
+
+from dataclasses import dataclass, field
+from typing import ClassVar
+
+from .base import BaseModel
+from .destination import Destination
 
 
-class Route:
-    def __init__(self, routed: str, destination_from: Destination, destination_to: Destination):
-        self.routed = routed
-        self.destination_from = destination_from
-        self.destination_to = destination_to
+@dataclass
+class Route(BaseModel):
+    MODEL_TYPE: ClassVar[str] = "route"
 
-        self.duration: float = 0.0
-        self.distance: float = 0.0
+    routed: str
+    destination_from: Destination
+    destination_to: Destination
 
-        self.isInternational: bool = (
-            destination_from.location.country != destination_to.location.country
+    duration: float = 0.0
+    distance: float = 0.0
+    is_international: bool = field(init=False)
+
+    def __post_init__(self):
+        self.is_international = (
+            self.destination_from.location.country !=
+            self.destination_to.location.country
         )
 
     def __repr__(self):
-        inter = "International" if self.isInternational else "Domestic"
+        inter = "International" if self.is_international else "Domestic"
         return f"Route({self.routed}, {inter})"

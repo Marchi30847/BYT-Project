@@ -1,13 +1,23 @@
-class Seat:
-    def __init__(self, number: int, row_letter: str):
-        self.number = number
-        self.row_letter = row_letter
+from __future__ import annotations
 
-        self.ticket = None
+from dataclasses import dataclass, field
+from typing import ClassVar, Optional
 
-    def assign_ticket(self, ticket):
+from .base import BaseModel
+
+
+@dataclass
+class Seat(BaseModel):
+    MODEL_TYPE: ClassVar[str] = "seat"
+
+    number: int
+    row_letter: str
+    ticket: Optional[object] = None
+
+    def assign_ticket(self, ticket) -> None:
         if self.ticket is not None:
             raise ValueError("Seat already assigned to another ticket")
+
         self.ticket = ticket
 
     def is_available(self) -> bool:

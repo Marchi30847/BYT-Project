@@ -22,15 +22,22 @@ class Pilot(Employee):
 
     @classmethod
     def from_dict(cls: type[Self], data: Mapping[str, Any]) -> Self:
-        base = Employee.from_dict(data)
-        return cls(
+        kwargs = dict(data)
+        kwargs.pop("type", None)
+        id_ = kwargs.pop("id", None)
+
+        base = Employee.from_dict(kwargs)
+
+        obj = cls(
             hire_date=base.hire_date,
             salary=base.salary,
             shift=base.shift,
-            licence_number=str(data["licence_number"]),
-            rank=PilotRank(data["rank"]),
-            flight_hours=int(data["flight_hours"]),
+            licence_number=str(kwargs["licence_number"]),
+            rank=PilotRank(kwargs["rank"]),
+            flight_hours=int(kwargs["flight_hours"]),
         )
+        obj.id = id_
+        return obj
 
     def to_dict(self) -> dict[str, Any]:
         d = super().to_dict()

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import ClassVar, Mapping, Any, Self
+from typing import ClassVar
 
 from .employee import Employee
 
@@ -12,14 +12,3 @@ class Dispatcher(Employee):
 
     specialization: str
     certification_level: int
-
-    @classmethod
-    def from_dict(cls: type[Self], data: Mapping[str, Any]) -> Self:
-        base = Employee.from_dict(data)
-        return cls(
-            hire_date=base.hire_date,
-            salary=base.salary,
-            shift=base.shift,
-            specialization=str(data["specialization"]),
-            certification_level=int(data["certification_level"]),
-        )

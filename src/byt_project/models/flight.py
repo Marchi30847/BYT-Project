@@ -1,10 +1,14 @@
-from enum import Enum
-from datetime import datetime
-from typing import List, Optional
+from __future__ import annotations
 
-from src.byt_project.models.airplane import Airplane
-from src.byt_project.models.gate import Gate
-from src.byt_project.models.route import Route
+from dataclasses import dataclass, field
+from datetime import datetime
+from enum import Enum
+from typing import ClassVar, List, Optional
+
+from .base import BaseModel
+from .airplane import Airplane
+from .gate import Gate
+from .route import Route
 
 
 class FlightStatus(Enum):
@@ -15,63 +19,38 @@ class FlightStatus(Enum):
     CANCELLED = "Cancelled"
 
 
-class Flight:
-    def __init__(
-        self,
-        flight_number: str,
-        departure_time: datetime,
-        arrival_time: datetime,
-        route: Route,
-        airplane: Airplane,
-        gate: Gate =None,
-        status: FlightStatus = FlightStatus.SCHEDULED
-    ):
-        self.flightNumber: str = flight_number
-        self.departureTime: datetime = departure_time
-        self.arrivalTime: datetime = arrival_time
-        self.status: FlightStatus = status
+@dataclass
+class Flight(BaseModel):
+    MODEL_TYPE: ClassVar[str] = "flight"
 
-        self.route = route
-        self.airplane = airplane
-        self.gate = gate
+    flight_number: str
+    departure_time: datetime
+    arrival_time: datetime
+    route: Route
+    airplane: Airplane
+    gate: Optional[Gate] = None
+    status: FlightStatus = FlightStatus.SCHEDULED
 
-        self.availableSeats: int = airplane.capacity
+    available_seats: int = field(init=False)
+    pilots: List = field(default_factory=list)
+    attendants: List = field(default_factory=list)
 
-        self.pilots: List = []
-        self.attendants: List = []
-
-
-    @staticmethod
-    def getFlightDetails(flights: List["Flight"], number: str) -> Optional["Flight"]:
-        for f in flights:
-            if f.flightNumber == number:
-                return f
-        return None
-
-    def getGate(self):
-        return self.gate
-
-    @staticmethod
-    def createFlight(flights_list: List["Flight"], flight: "Flight") -> None:
-        flights_list.append(flight)
-
-    def updateFlight(self, **kwargs):
-        for key, value in kwargs.items():
-            if hasattr(self, key):
-                setattr(self, key, value)
+    def __post_init__(self):
+        self.available_seats = self.airplane.capacity
 
     def cancel(self):
         self.status = FlightStatus.CANCELLED
 
-    def assignPilot(self, pilot):
+    def assign_pilot(self, pilot):
         if len(self.pilots) < 2:
             self.pilots.append(pilot)
 
-    def assignAttendant(self, attendant):
+    def assign_attendant(self, attendant):
         self.attendants.append(attendant)
 
-    def bookSeat(self, count: int = 1) -> bool:
-        if self.availableSeats >= count:
-            self.availableSeats -= count
+    def book_seat(self, count: int = 1) -> bool:
+        if self.available_seats >= count:
+            self.available_seats -= count
             return True
+
         return False
