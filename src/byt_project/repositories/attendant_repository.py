@@ -4,11 +4,12 @@ from pathlib import Path
 
 from ..models.airplane import Airplane
 from .base_repository import BaseRepository
+from ..models.attendant import Attendant
 
 
-class AirplaneRepository(BaseRepository[Airplane]):
+class AttendantRepository(BaseRepository[Attendant]):
     def __init__(self) -> None:
         super().__init__(
-            model_cls=Airplane,
-            data_dir=Path("data/airplanes.json"),
+            model_cls=Attendant,
+            data_dir=Path("data/attendants.json"),
         )

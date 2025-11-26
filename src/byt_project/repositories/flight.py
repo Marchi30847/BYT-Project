@@ -2,13 +2,13 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from ..models.airplane import Airplane
 from .base_repository import BaseRepository
+from ..models.flight import Flight
 
 
-class AirplaneRepository(BaseRepository[Airplane]):
+class FlightRepository(BaseRepository[Flight]):
     def __init__(self) -> None:
         super().__init__(
-            model_cls=Airplane,
-            data_dir=Path("data/airplanes.json"),
+            model_cls=Flight,
+            data_dir=Path("data/flights.json"),
         )
