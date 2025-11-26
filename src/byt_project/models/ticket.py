@@ -5,6 +5,7 @@ from datetime import datetime
 from typing import ClassVar, Optional, List, Mapping, Any, Self
 
 from .base import BaseModel
+from .luggage import Luggage
 from .seat import Seat
 from .flight import Flight
 
@@ -13,15 +14,15 @@ from .flight import Flight
 class Ticket(BaseModel):
     MODEL_TYPE: ClassVar[str] = "ticket"
 
-    ticket_type: str
+    type: str
     price: float
     booking_date: datetime
     luggage_limit: float
-
-    flight: Optional[Flight] = None
-    seat: Optional[Seat] = None
+    seat: Seat
+    luggage: List[Luggage]
+    flight: Flight | None = None
     is_flagged: bool = False
-    bags: List = field(default_factory=list)
+    # IDK how to implement {bag} on diagram
 
     def assign_seat(self, seat: Seat) -> None:
         if seat.ticket is not None:

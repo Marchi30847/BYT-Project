@@ -1,9 +1,10 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import ClassVar, Optional, List
+from typing import ClassVar, List
 
 from .base import BaseModel
+from .flight import Flight
 from .terminal import Terminal
 
 
@@ -12,9 +13,9 @@ class Gate(BaseModel):
     MODEL_TYPE: ClassVar[str] = "gate"
 
     number: int
-    terminal: Optional[Terminal] = None
+    terminal: Terminal | None = None
     is_open: bool = True
-    flights: List = field(default_factory=list)
+    flights: List[Flight] = field(default_factory=list)
 
     def add_flight(self, flight):
         if not self.is_open:

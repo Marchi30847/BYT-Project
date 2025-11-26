@@ -2,9 +2,11 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import ClassVar, Mapping, Any, Self
+from typing import ClassVar, Mapping, Any, Self, Generator
 
+from . import BaseModel
 from .employee import Employee
+from .flight import FlightStatus, Flight
 
 
 class PilotRank(Enum):
@@ -13,12 +15,13 @@ class PilotRank(Enum):
 
 
 @dataclass
-class Pilot(Employee):
+class Pilot(BaseModel, Employee):
     MODEL_TYPE: ClassVar[str] = "pilot"
 
     licence_number: str
     rank: PilotRank
     flight_hours: int
+    flights: list[Flight] | None = None
 
     @classmethod
     def from_dict(cls: type[Self], data: Mapping[str, Any]) -> Self:
@@ -44,8 +47,8 @@ class Pilot(Employee):
         d["rank"] = self.rank.value
         return d
 
-    def get_assigned_flights(self) -> list[str]:
-        raise NotImplementedError
+    def get_assigned_flights(self):
+        return (f for f in self.flights if f.status == FlightStatus.SCHEDULED)
 
     def report(self, message: str) -> None:
         raise NotImplementedError

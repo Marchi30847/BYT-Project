@@ -4,6 +4,7 @@ from dataclasses import dataclass, field
 from typing import ClassVar, Optional
 
 from .base import BaseModel
+from .ticket import Ticket
 
 
 @dataclass
@@ -12,7 +13,7 @@ class Seat(BaseModel):
 
     number: int
     row_letter: str
-    ticket: Optional[object] = None
+    ticket: Ticket
 
     def assign_ticket(self, ticket) -> None:
         if self.ticket is not None:

@@ -6,6 +6,7 @@ from typing import ClassVar
 
 from .base import BaseModel
 from .airline import Airline
+from .flight import Flight
 
 
 @dataclass
@@ -18,6 +19,7 @@ class Airplane(BaseModel):
     max_luggage_weight: float
     year_of_manufacture: int
     airline: Airline
+    flights: list[Flight]
 
     max_service_years: ClassVar[int] = 30
 

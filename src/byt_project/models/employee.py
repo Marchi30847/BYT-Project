@@ -5,6 +5,7 @@ from datetime import date
 from enum import Enum
 from typing import Mapping, Any, Self, ClassVar
 
+from src.byt_project.models.airline import Airline
 from src.byt_project.models.base import BaseModel
 
 
@@ -20,6 +21,7 @@ class Employee(BaseModel):
     hire_date: date
     salary: float
     shift: Shift
+    airline: Airline | None = None
 
     @classmethod
     def from_dict(cls: type[Self], data: Mapping[str, Any]) -> Self:

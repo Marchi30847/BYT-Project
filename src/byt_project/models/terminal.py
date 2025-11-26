@@ -6,6 +6,7 @@ from typing import ClassVar, Dict, Optional, List
 
 from .base import BaseModel
 from .gate import Gate
+from .security_officer import SecurityOfficer
 
 
 class TerminalStatus(Enum):
@@ -18,12 +19,14 @@ class TerminalStatus(Enum):
 class Terminal(BaseModel):
     MODEL_TYPE: ClassVar[str] = "terminal"
 
-    terminal_number: str
+    number: str
     capacity: int
     status: TerminalStatus
     gates_count: int
     floors_count: int
     area: int
+
+    security_officers: list[SecurityOfficer] = field(default_factory=list)
     gates: Dict[int, Gate] = field(default_factory=dict)
 
     def add_gate(self, gate: Gate) -> None:
@@ -37,3 +40,9 @@ class Terminal(BaseModel):
 
     def list_gates(self) -> List[int]:
         return list(self.gates.keys())
+
+    def open(self):
+        self.status = TerminalStatus.OPERATIONAL
+
+    def closeForMaintenance(self):
+        self.status = TerminalStatus.UNDER_MAINTENANCE
