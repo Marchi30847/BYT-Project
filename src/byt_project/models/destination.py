@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, fields
-from typing import ClassVar, Any, TYPE_CHECKING
+from typing import ClassVar, Any, cast
 
 from .base import BaseModel
 
@@ -24,20 +24,16 @@ class Destination(BaseModel):
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> Destination:
-        valid_arg_names = {f.name for f in fields(cls) if f.init}
-        clean_kwargs = {k: v for k, v in data.items() if k in valid_arg_names}
+        data_copy: dict[str, Any] = dict(data)
 
-        loc_data = clean_kwargs.get("location")
+        loc_data: dict[str, Any] = data_copy.get("location")
 
         if isinstance(loc_data, dict):
-            loc_fields = {f.name for f in fields(Location)}
-            clean_loc_data = {k: v for k, v in loc_data.items() if k in loc_fields}
+            loc_valid_fields: set[str] = {f.name for f in fields(Location)}
+            clean_loc_data: dict[str, Any] = {k: v for k, v in loc_data.items() if k in loc_valid_fields}
 
-            clean_kwargs["location"] = Location(**clean_loc_data)
+            data_copy["location"] = Location(**clean_loc_data)
 
-        instance = cls(**clean_kwargs)
-
-        raw_id: str | int | None = data.get("id")
-        instance.id = int(raw_id) if raw_id is not None else None
+        instance = cast(Destination, super().from_dict(data_copy))
 
         return instance

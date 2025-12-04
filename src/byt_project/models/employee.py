@@ -3,10 +3,9 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import date
 from enum import Enum
-from typing import Mapping, Any, Self, ClassVar
+from typing import ClassVar, Any, cast
 
-from src.byt_project.models.airline import Airline
-from src.byt_project.models.base import BaseModel
+from .base import BaseModel
 
 
 class Shift(Enum):
@@ -21,28 +20,29 @@ class Employee(BaseModel):
     hire_date: date
     salary: float
     shift: Shift
-    airline: Airline | None = None
-
-    @classmethod
-    def from_dict(cls: type[Self], data: Mapping[str, Any]) -> Self:
-        kwargs = dict(data)
-        kwargs.pop("type", None)
-        id_ = kwargs.pop("id", None)
-
-        hire_date = date.fromisoformat(kwargs["hire_date"])
-        salary = float(kwargs["salary"])
-        shift = Shift(kwargs["shift"])
-
-        obj = cls(
-            hire_date=hire_date,
-            salary=salary,
-            shift=shift,
-        )
-        obj.id = id_
-        return obj
 
     def to_dict(self) -> dict[str, Any]:
-        d = super().to_dict()
-        d["hire_date"] = self.hire_date.isoformat()
-        d["shift"] = self.shift.value
-        return d
+        data = super().to_dict()
+
+        data["hire_date"] = self.hire_date.isoformat()
+        data["shift"] = self.shift.value
+
+        return data
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> Employee:
+        data_copy: dict[str, Any] = dict(data)
+
+        raw_date: Any = data_copy.get("hire_date")
+        if isinstance(raw_date, str):
+            data_copy["hire_date"] = date.fromisoformat(raw_date)
+
+        raw_shift: Any = data_copy.get("shift")
+        if raw_shift in {s.value for s in Shift}:
+            data_copy["shift"] = Shift(raw_shift)
+        else:
+            data_copy["shift"] = None
+
+        instance = cast(Employee, super().from_dict(data_copy))
+
+        return instance

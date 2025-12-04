@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, field, fields
-from typing import ClassVar, Any, TYPE_CHECKING
+from dataclasses import dataclass, field
+from typing import ClassVar, Any, TYPE_CHECKING, cast
 
 from .base import BaseModel
 
@@ -36,6 +36,8 @@ class Airline(BaseModel):
 
         if self.parent_company:
             data["parent_company_id"] = self.parent_company.id
+        elif self.parent_company_id is not None:
+            data["parent_company_id"] = self.parent_company_id
         else:
             data["parent_company_id"] = None
 
@@ -47,15 +49,9 @@ class Airline(BaseModel):
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> Airline:
-        valid_arg_names: set[str] = {f.name for f in fields(cls) if f.init}
-        clean_kwargs: dict[str, Any] = {k: v for k, v in data.items() if k in valid_arg_names}
-
-        instance = cls(**clean_kwargs)
+        instance = cast(Airline, super().from_dict(data))
 
         raw_parent_id: str | int | None = data.get("parent_company_id")
         instance.parent_company_id = int(raw_parent_id) if raw_parent_id is not None else None
-
-        raw_id: str | int | None = data.get("id")
-        instance.id = int(raw_id) if raw_id is not None else None
 
         return instance

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field, fields
 from datetime import datetime
-from typing import ClassVar, Any, TYPE_CHECKING
+from typing import ClassVar, Any, TYPE_CHECKING, cast
 
 from .base import BaseModel
 
@@ -37,6 +37,8 @@ class Airplane(BaseModel):
 
         if self.airline:
             data["airline_id"] = self.airline.id
+        elif self.airline_id is not None:
+            data["airline_id"] = self.airline_id
         else:
             data["airline_id"] = None
 
@@ -47,16 +49,10 @@ class Airplane(BaseModel):
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> Airplane:
-        valid_arg_names: set[str] = {f.name for f in fields(cls) if f.init}
-        clean_kwargs: dict[str, Any] = {k: v for k, v in data.items() if k in valid_arg_names}
-
-        instance = cls(**clean_kwargs)
+        instance = cast(Airplane, super().from_dict(data))
 
         raw_airline_id: str | int | None = data.get("airline_id")
         instance.airline_id = int(raw_airline_id) if raw_airline_id is not None else None
-
-        raw_id: str | None = data.get("id")
-        instance.id = int(raw_id) if raw_id is not None else None
 
         return instance
 

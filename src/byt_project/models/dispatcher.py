@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, field, fields
-from typing import ClassVar, Any, TYPE_CHECKING
+from dataclasses import dataclass, field
+from typing import ClassVar, Any, TYPE_CHECKING, cast
 
-from .employee import Employee
+from . import AirlineStaff
 
 if TYPE_CHECKING:
     from .flight import Flight
@@ -11,11 +11,11 @@ if TYPE_CHECKING:
 
 
 @dataclass(kw_only=True)
-class Dispatcher(Employee):
+class Dispatcher(AirlineStaff):
     MODEL_TYPE: ClassVar[str] = "dispatcher"
 
-    specialization: str = ""
-    certification_level: int = 1
+    specialization: str
+    certification_level: int
 
 
     terminal_id: int | None = field(default=None, init=False)
@@ -32,6 +32,8 @@ class Dispatcher(Employee):
 
         if self.terminal:
             data["terminal_id"] = self.terminal.id
+        elif self.terminal_id is not None:
+            data["terminal_id"] = self.terminal_id
         else:
             data["terminal_id"] = None
 
@@ -42,13 +44,7 @@ class Dispatcher(Employee):
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> Dispatcher:
-        valid_arg_names: set[str] = {f.name for f in fields(cls) if f.init}
-        clean_kwargs: dict[str, Any] = {k: v for k, v in data.items() if k in valid_arg_names}
-
-        instance = cls(**clean_kwargs)
-
-        raw_id: str | int | None = data.get("id")
-        instance.id = int(raw_id) if raw_id is not None else None
+        instance = cast(Dispatcher, super().from_dict(data))
 
         raw_airline_id: str | int | None = data.get("airline_id")
         instance.airline_id = int(raw_airline_id) if raw_airline_id is not None else None

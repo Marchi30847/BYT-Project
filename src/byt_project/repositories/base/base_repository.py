@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import TypeVar, Generic, Type
+from typing import TypeVar, Generic, Type, Any
 
 from src.byt_project.models import BaseModel
 
@@ -88,7 +88,7 @@ class BaseRepository(Generic[T]):
         return obj
 
     def find_by_id(self, obj_id: int) -> T | None:
-        rows = self._load_rows()
+        rows: list[dict[str, Any]] = self._load_rows()
         for row in rows:
             if row.get("id") == obj_id:
                 return self.model_cls.from_dict(row)
