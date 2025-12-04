@@ -20,7 +20,6 @@ class BaseRepository(Generic[T]):
         self.data_dir.mkdir(exist_ok=True)
         self._init_next_id_from_meta()
 
-
     @property
     def model_type(self) -> str:
         return self.model_cls.MODEL_TYPE
@@ -49,7 +48,6 @@ class BaseRepository(Generic[T]):
         with path.open("w", encoding="utf-8") as f:
             json.dump(rows, f, indent=2, ensure_ascii=False)
 
-
     def _init_next_id_from_meta(self) -> None:
         meta_path = self._meta_path()
         if not meta_path.exists():
@@ -73,9 +71,8 @@ class BaseRepository(Generic[T]):
         with meta_path.open("w", encoding="utf-8") as f:
             json.dump(meta, f, indent=2, ensure_ascii=False)
 
-
     def create(self, obj: T) -> T:
-        rows = self._load_rows()
+        rows: list[dict[str, Any]] = self._load_rows()
 
         if obj.id is None:
             obj.id = self._next_id
@@ -96,7 +93,7 @@ class BaseRepository(Generic[T]):
         return None
 
     def find_all(self) -> list[T]:
-        rows = self._load_rows()
+        rows: list[dict[str, Any]] = self._load_rows()
 
         return [self.model_cls.from_dict(r) for r in rows]
 
@@ -104,8 +101,8 @@ class BaseRepository(Generic[T]):
         if obj.id is None:
             raise ValueError("Cannot update object without id")
 
-        rows = self._load_rows()
-        updated = False
+        rows: list[dict[str, Any]] = self._load_rows()
+        updated: bool = False
 
         for idx, row in enumerate(rows):
             if row.get("id") == obj.id:
