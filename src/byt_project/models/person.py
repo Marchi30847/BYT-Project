@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from datetime import date
 from typing import ClassVar
 
-from src.byt_project.models import BaseModel
+from src.byt_project.models.base import BaseModel
 
 
 @dataclass

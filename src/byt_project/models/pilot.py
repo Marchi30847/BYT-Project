@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import ClassVar, Mapping, Any, Self, Generator
 
-from . import BaseModel
+from .base import BaseModel
 from .employee import Employee
 from .flight import FlightStatus, Flight
 

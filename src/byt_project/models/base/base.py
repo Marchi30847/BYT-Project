@@ -26,8 +26,9 @@ class BaseModel(Serializable):
         if not is_dataclass(self):
             raise TypeError("BaseModel requires dataclass subclasses")
 
-        data = asdict(self)
+        data: dict[str, Any] = asdict(self)
         data["type"] = self.MODEL_TYPE
+
         return data
 
     @classmethod
@@ -35,6 +36,14 @@ class BaseModel(Serializable):
         if cls is BaseModel:
             raise TypeError("BaseModel.from_dict must be called on a subclass")
 
-        kwargs = dict(data)
+        kwargs: dict[str, Any] = dict(data)
         kwargs.pop("type", None)
-        return cls(**kwargs)
+
+        raw_id: str | int | None = kwargs.pop("id", None)
+
+        # noinspection PyArgumentList
+        instance = cls(**kwargs)
+
+        instance.id = int(raw_id) if raw_id is not None else None
+
+        return instance

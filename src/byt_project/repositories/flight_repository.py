@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from .base_repository import BaseRepository
-from ..models.flight import Flight
+from .base import BaseRepository
+from ..models import Flight
 
 
 class FlightRepository(BaseRepository[Flight]):
@@ -12,3 +12,6 @@ class FlightRepository(BaseRepository[Flight]):
             model_cls=Flight,
             data_dir=Path("data/flights.json"),
         )
+
+    def find_all_by_airplane_id(self, airline_id: int) -> list[Flight]:
+        pass

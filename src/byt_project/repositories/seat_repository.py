@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from .base_repository import BaseRepository
-from ..models.seat import Seat
+from .base import BaseRepository
+from ..models import Seat
 
 class SeatRepository(BaseRepository[Seat]):
     def __init__(self) -> None:

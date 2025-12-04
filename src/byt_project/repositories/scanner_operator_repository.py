@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from .base_repository import BaseRepository
-from ..models.scanner_operator import ScannerOperator
+from .base import BaseRepository
+from ..models import ScannerOperator
 
 
 class ScannerOperatorRepository(BaseRepository[ScannerOperator]):

@@ -2,9 +2,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from ..models.airplane import Airplane
-from .base_repository import BaseRepository
-from ..models.attendant import Attendant
+from .base import BaseRepository
+from ..models import Attendant
 
 
 class AttendantRepository(BaseRepository[Attendant]):

@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from src.byt_project.models.airline import Airline
-from src.byt_project.repositories.base_repository import BaseRepository
+from .base import BaseRepository
+from ..models import Airline
 
 
 class AirlineRepository(BaseRepository[Airline]):

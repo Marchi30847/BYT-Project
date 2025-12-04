@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import ClassVar
 
-from src.byt_project.models import BaseModel
+from src.byt_project.models.base import BaseModel
 from src.byt_project.models.bhss_scanner import Scanner
 from src.byt_project.models.carryon_luggage import CarryOnLuggage
 

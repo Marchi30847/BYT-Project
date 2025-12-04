@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from .base_repository import BaseRepository
-from ..models.dispatcher import Dispatcher
+from .base import BaseRepository
+from ..models import Dispatcher
 
 
 class DispatcherRepository(BaseRepository[Dispatcher]):

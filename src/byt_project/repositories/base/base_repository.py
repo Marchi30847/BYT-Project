@@ -3,9 +3,9 @@ from __future__ import annotations
 import json
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import TypeVar, Generic, Type, List, Optional
+from typing import TypeVar, Generic, Type
 
-from ..models.base import BaseModel
+from src.byt_project.models import BaseModel
 
 T = TypeVar("T", bound=BaseModel)
 
@@ -36,7 +36,7 @@ class BaseRepository(Generic[T]):
     def _meta_path(self) -> Path:
         return self._get_model_dir() / "meta.json"
 
-    def _load_rows(self) -> List[dict]:
+    def _load_rows(self) -> list[dict]:
         path = self._table_path()
         if not path.exists():
             return []
@@ -44,7 +44,7 @@ class BaseRepository(Generic[T]):
         with path.open("r", encoding="utf-8") as f:
             return json.load(f)
 
-    def _save_rows(self, rows: List[dict]) -> None:
+    def _save_rows(self, rows: list[dict]) -> None:
         path = self._table_path()
         with path.open("w", encoding="utf-8") as f:
             json.dump(rows, f, indent=2, ensure_ascii=False)
@@ -62,7 +62,7 @@ class BaseRepository(Generic[T]):
         if isinstance(next_id, int) and next_id > 0:
             self._next_id = next_id
 
-    def _persist_next_id(self, rows: List[dict]) -> None:
+    def _persist_next_id(self, rows: list[dict]) -> None:
         if rows:
             max_id = max(row.get("id", 0) or 0 for row in rows)
             if max_id >= self._next_id:
@@ -72,8 +72,6 @@ class BaseRepository(Generic[T]):
         meta_path = self._meta_path()
         with meta_path.open("w", encoding="utf-8") as f:
             json.dump(meta, f, indent=2, ensure_ascii=False)
-
-
 
 
     def create(self, obj: T) -> T:
@@ -89,7 +87,7 @@ class BaseRepository(Generic[T]):
 
         return obj
 
-    def find_by_id(self, obj_id: int) -> Optional[T]:
+    def find_by_id(self, obj_id: int) -> T | None:
         rows = self._load_rows()
         for row in rows:
             if row.get("id") == obj_id:
@@ -97,12 +95,12 @@ class BaseRepository(Generic[T]):
 
         return None
 
-    def find_all(self) -> List[T]:
+    def find_all(self) -> list[T]:
         rows = self._load_rows()
 
         return [self.model_cls.from_dict(r) for r in rows]
 
-    def update(self, obj: T) -> Optional[T]:
+    def update(self, obj: T) -> T | None:
         if obj.id is None:
             raise ValueError("Cannot update object without id")
 

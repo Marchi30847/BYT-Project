@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
-from typing import ClassVar, Mapping, Any, Self
+from dataclasses import dataclass, fields
+from typing import ClassVar, Any, TYPE_CHECKING
 
 from .base import BaseModel
 
@@ -23,15 +23,21 @@ class Destination(BaseModel):
     airport: str
 
     @classmethod
-    def from_dict(cls: type[Self], data: Mapping[str, Any]) -> Self:
-        kwargs = dict(data)
-        kwargs.pop("type", None)
-        id_ = kwargs.pop("id", None)
+    def from_dict(cls, data: dict[str, Any]) -> Destination:
+        valid_arg_names = {f.name for f in fields(cls) if f.init}
+        clean_kwargs = {k: v for k, v in data.items() if k in valid_arg_names}
 
-        loc_data = kwargs.get("location")
+        loc_data = clean_kwargs.get("location")
+
         if isinstance(loc_data, dict):
-            kwargs["location"] = Location(**loc_data)
+            loc_fields = {f.name for f in fields(Location)}
+            clean_loc_data = {k: v for k, v in loc_data.items() if k in loc_fields}
 
-        obj = cls(**kwargs)
-        obj.id = id_
-        return obj
+            clean_kwargs["location"] = Location(**clean_loc_data)
+
+        instance = cls(**clean_kwargs)
+
+        raw_id: str | int | None = data.get("id")
+        instance.id = int(raw_id) if raw_id is not None else None
+
+        return instance

@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from .base_repository import BaseRepository
-from ..models.route import Route
+from .base import BaseRepository
+from ..models import Route
 
 
 class RouteRepository(BaseRepository[Route]):

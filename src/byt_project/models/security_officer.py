@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import ClassVar
 
-from . import BaseModel
+from .base import BaseModel
 from .employee import Employee
 from .terminal import Terminal
 

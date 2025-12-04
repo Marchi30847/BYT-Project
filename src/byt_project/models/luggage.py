@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import ClassVar
 
-from src.byt_project.models import BaseModel
+from src.byt_project.models.base import BaseModel
 from src.byt_project.models.ticket import Ticket
 
 

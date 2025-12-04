@@ -22,7 +22,6 @@ class Ticket(BaseModel):
     luggage: List[Luggage]
     flight: Flight | None = None
     is_flagged: bool = False
-    # IDK how to implement {bag} on diagram
 
     def assign_seat(self, seat: Seat) -> None:
         if seat.ticket is not None:
