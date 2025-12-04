@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
-from typing import ClassVar, Any, TYPE_CHECKING
+from typing import ClassVar, Any, TYPE_CHECKING, cast
 
 from .base import BaseModel
 
@@ -36,37 +36,52 @@ class Flight(BaseModel):
 
     available_seats: int = field(init=False, default=0)
 
-
-    gate: Gate | None = None
+    # --- Одиночные связи ---
     gate_id: int | None = field(default=None, init=False)
+    gate: Gate | None = field(default=None)
 
-    captain: Pilot | None = None
     captain_id: int | None = field(default=None, init=False)
+    captain: Pilot | None = field(default=None)
 
-    route: Route | None = None
     route_id: int | None = field(default=None, init=False)
+    route: Route | None = field(default=None)
 
-    airplane: Airplane | None = None
     airplane_id: int | None = field(default=None, init=False)
+    airplane: Airplane | None = field(default=None)
 
-    dispatcher: Dispatcher | None = None
     dispatcher_id: int | None = field(default=None, init=False)
+    dispatcher: Dispatcher | None = field(default=None)
 
-    destination: Destination | None = None
     destination_id: int | None = field(default=None, init=False)
+    destination: Destination | None = field(default=None)
 
-
+    # --- Списки (M2M) ---
+    pilot_ids: list[int] = field(default_factory=list, init=False)
     pilots: list[Pilot] = field(default_factory=list)
+
+    attendant_ids: list[int] = field(default_factory=list, init=False)
     attendants: list[Attendant] = field(default_factory=list)
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
+        if hasattr(super(), "__post_init__"):
+            super().__post_init__()
+
+        # 1. Синхронизация одиночных ID
         if self.gate and getattr(self.gate, 'id', None): self.gate_id = self.gate.id
-        if self.captain and getattr(self.captain, 'id', None): self.capitan_id = self.captain.id
+        if self.captain and getattr(self.captain, 'id', None): self.captain_id = self.captain.id
         if self.route and getattr(self.route, 'id', None): self.route_id = self.route.id
         if self.airplane and getattr(self.airplane, 'id', None): self.airplane_id = self.airplane.id
         if self.dispatcher and getattr(self.dispatcher, 'id', None): self.dispatcher_id = self.dispatcher.id
         if self.destination and getattr(self.destination, 'id', None): self.destination_id = self.destination.id
 
+        # 2. Синхронизация списков (Явная логика)
+        if self.pilots:
+            self.pilot_ids = [p.id for p in self.pilots if getattr(p, 'id', None) is not None]
+
+        if self.attendants:
+            self.attendant_ids = [a.id for a in self.attendants if getattr(a, 'id', None) is not None]
+
+        # 3. Расчет мест
         if self.airplane:
             self.available_seats = self.airplane.capacity
         else:
@@ -81,94 +96,106 @@ class Flight(BaseModel):
 
         data["status"] = self.status.value
 
-        def set_id(obj_field, id_field, key_name):
+        # Локальный хелпер для сохранения FK
+        def save_fk(obj_field, id_field, key):
             if obj_field:
-                data[key_name] = obj_field.id
+                data[key] = obj_field.id
             elif id_field is not None:
-                data[key_name] = id_field
+                data[key] = id_field
             else:
-                data[key_name] = None
+                data[key] = None
 
-        set_id(self.gate, self.gate_id, "gate_id")
-        set_id(self.captain, self.capitan_id, "capitan_id")
-        set_id(self.route, self.route_id, "route_id")
-        set_id(self.airplane, self.airplane_id, "airplane_id")
-        set_id(self.dispatcher, self.dispatcher_id, "dispatcher_id")
-        set_id(self.destination, self.destination_id, "destination_id")
+        save_fk(self.gate, self.gate_id, "gate_id")
+        save_fk(self.captain, self.captain_id, "captain_id")
+        save_fk(self.route, self.route_id, "route_id")
+        save_fk(self.airplane, self.airplane_id, "airplane_id")
+        save_fk(self.dispatcher, self.dispatcher_id, "dispatcher_id")
+        save_fk(self.destination, self.destination_id, "destination_id")
 
-        data["pilot_ids"] = [p.id for p in self.pilots if p.id is not None]
-        data["attendant_ids"] = [a.id for a in self.attendants if a.id is not None]
+        # Локальный хелпер для сохранения списков FK
+        def save_many_fk(objs_list, ids_list, key):
+            # 1. Приоритет: Живые объекты
+            current_ids = [obj.id for obj in objs_list if obj.id is not None]
 
-        data.pop("gate", None)
-        data.pop("capitan", None)
-        data.pop("route", None)
-        data.pop("airplane", None)
-        data.pop("dispatcher", None)
-        data.pop("destination", None)
-        data.pop("pilots", None)
-        data.pop("attendants", None)
+            # 2. Бэкап: Сохраненные ID, если объектов нет
+            if not current_ids and ids_list:
+                current_ids = ids_list
+
+            data[key] = current_ids
+
+        save_many_fk(self.pilots, self.pilot_ids, "pilot_ids")
+        save_many_fk(self.attendants, self.attendant_ids, "attendant_ids")
+
+        # Чистка
+        for k in ["gate", "captain", "route", "airplane", "dispatcher", "destination", "pilots", "attendants"]:
+            data.pop(k, None)
 
         return data
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> Flight:
-        kwargs: dict[str, Any] = dict(data)
-        kwargs.pop("type", None)
+        data_copy: dict[str, Any] = dict(data)
 
-        kwargs["departure_time"] = datetime.fromisoformat(kwargs["departure_time"])
-        if kwargs.get("arrival_time"):
-            kwargs["arrival_time"] = datetime.fromisoformat(kwargs["arrival_time"])
+        # Конвертация типов
+        raw_dep: Any = data_copy.get("departure_time")
+        if isinstance(raw_dep, str):
+            data_copy["departure_time"] = datetime.fromisoformat(raw_dep)
 
-        if kwargs.get("status"):
-            kwargs["status"] = FlightStatus(kwargs["status"])
+        raw_arr: Any = data_copy.get("arrival_time")
+        if isinstance(raw_arr, str):
+            data_copy["arrival_time"] = datetime.fromisoformat(raw_arr)
 
-        gate_id: str | None = kwargs.pop("gate_id", None)
-        capitan_id: str | None = kwargs.pop("capitan_id", None)
-        route_id: str | None = kwargs.pop("route_id", None)
-        airplane_id: str | None = kwargs.pop("airplane_id", None)
-        dispatcher_id: str | None = kwargs.pop("dispatcher_id", None)
-        destination_id: str | None = kwargs.pop("destination_id", None)
+        raw_status: Any = data_copy.get("status")
+        if raw_status in {s.value for s in FlightStatus}:
+            data_copy["status"] = FlightStatus(raw_status)
+        else:
+            data_copy.pop("status", None)
 
-        # handle
-        kwargs.pop("pilot_ids", None)
-        kwargs.pop("attendant_ids", None)
+        instance = cast(Flight, super().from_dict(data_copy))
 
-        kwargs.pop("gate", None)
-        kwargs.pop("capitan", None)
-        kwargs.pop("route", None)
-        kwargs.pop("airplane", None)
-        kwargs.pop("dispatcher", None)
-        kwargs.pop("destination", None)
-        kwargs.pop("pilots", None)
-        kwargs.pop("attendants", None)
+        # Восстановление одиночных ID
+        def restore_fk(key, attr_name):
+            raw_val: Any = data.get(key)
+            val = int(raw_val) if raw_val is not None else None
+            setattr(instance, attr_name, val)
 
-        obj = cls(**kwargs)
+        restore_fk("gate_id", "gate_id")
+        restore_fk("captain_id", "captain_id")
+        restore_fk("route_id", "route_id")
+        restore_fk("airplane_id", "airplane_id")
+        restore_fk("dispatcher_id", "dispatcher_id")
+        restore_fk("destination_id", "destination_id")
 
-        obj.gate_id = int(gate_id) if gate_id is not None else None
-        obj.capitan_id = int(capitan_id) if capitan_id is not None else None
-        obj.route_id = int(route_id) if route_id is not None else None
-        obj.airplane_id = int(airplane_id) if airplane_id is not None else None
-        obj.dispatcher_id = int(dispatcher_id) if dispatcher_id is not None else None
-        obj.destination_id = int(destination_id) if destination_id is not None else None
+        # Восстановление списков ID
+        def restore_many_fk(key, attr_name):
+            raw_ids: Any = data.get(key)
+            if isinstance(raw_ids, list):
+                clean_ids = [int(x) for x in raw_ids if x is not None]
+                setattr(instance, attr_name, clean_ids)
 
-        return obj
+        restore_many_fk("pilot_ids", "pilot_ids")
+        restore_many_fk("attendant_ids", "attendant_ids")
 
+        return instance
 
-    def cancel(self):
+    def cancel(self) -> None:
         self.status = FlightStatus.CANCELLED
 
-    def assign_pilot(self, pilot: Pilot):
+    def assign_pilot(self, pilot: Pilot) -> None:
         if len(self.pilots) < 2:
             self.pilots.append(pilot)
+            if pilot.id is not None:
+                self.pilot_ids.append(pilot.id)
         else:
             raise ValueError("Flight already has two pilots")
 
-    def assign_attendant(self, attendant: Attendant):
+    def assign_attendant(self, attendant: Attendant) -> None:
         self.attendants.append(attendant)
+        if attendant.id is not None:
+            self.attendant_ids.append(attendant.id)
 
     def book_seat(self, count: int = 1) -> bool:
         if self.available_seats >= count:
             self.available_seats -= count
             return True
-
         return False
