@@ -7,7 +7,7 @@ from typing import ClassVar
 from src.byt_project.models.base import BaseModel
 
 
-@dataclass
+@dataclass(kw_only=True)
 class Person(BaseModel):
     MODEL_TYPE: ClassVar[str] = "person"
 

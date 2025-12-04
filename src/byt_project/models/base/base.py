@@ -16,7 +16,7 @@ class Serializable(Protocol):
         ...
 
 
-@dataclass
+@dataclass(kw_only=True)
 class BaseModel(Serializable):
     MODEL_TYPE: ClassVar[str] = "base_model"
 

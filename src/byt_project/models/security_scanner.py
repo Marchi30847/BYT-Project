@@ -6,7 +6,7 @@ from src.byt_project.models.bhss_scanner import Scanner
 from src.byt_project.models.carryon_luggage import CarryOnLuggage
 
 
-@dataclass
+@dataclass(kw_only=True)
 class SecurityScanner(BaseModel, Scanner):
     MODEL_TYPE: ClassVar[str] = "security_scanner"
 

@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from .terminal import Terminal
 
 
-@dataclass
+@dataclass(kw_only=True)
 class Dispatcher(Employee):
     MODEL_TYPE: ClassVar[str] = "dispatcher"
 

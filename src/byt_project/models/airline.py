@@ -9,7 +9,7 @@ if TYPE_CHECKING:
     from .airplane import Airplane
 
 
-@dataclass
+@dataclass(kw_only=True)
 class Airline(BaseModel):
     MODEL_TYPE: ClassVar[str] = "airline"
 

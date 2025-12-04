@@ -6,7 +6,7 @@ from src.byt_project.models.base import BaseModel
 from src.byt_project.models.scanner_operator import ScannerOperator
 
 
-@dataclass
+@dataclass(kw_only=True)
 class Scanner(BaseModel):
     MODEL_TYPE: ClassVar[str] = "scanner"
 

@@ -8,7 +8,7 @@ from .flight import Flight
 from .terminal import Terminal
 
 
-@dataclass
+@dataclass(kw_only=True)
 class Gate(BaseModel):
     MODEL_TYPE: ClassVar[str] = "gate"
 

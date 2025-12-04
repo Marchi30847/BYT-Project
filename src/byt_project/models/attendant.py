@@ -9,7 +9,7 @@ if TYPE_CHECKING:
     from .flight import Flight, FlightStatus
 
 
-@dataclass
+@dataclass(kw_only=True)
 class Attendant(Employee):
     MODEL_TYPE: ClassVar[str] = "attendant"
 

@@ -1,13 +1,13 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-from typing import ClassVar, Optional
+from dataclasses import dataclass
+from typing import ClassVar
 
 from .base import BaseModel
 from .ticket import Ticket
 
 
-@dataclass
+@dataclass(kw_only=True)
 class Seat(BaseModel):
     MODEL_TYPE: ClassVar[str] = "seat"
 

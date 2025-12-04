@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from datetime import datetime
-from typing import ClassVar, Optional, List, Mapping, Any, Self
+from typing import ClassVar, List, Mapping, Any, Self
 
 from .base import BaseModel
 from .luggage import Luggage
@@ -10,7 +10,7 @@ from .seat import Seat
 from .flight import Flight
 
 
-@dataclass
+@dataclass(kw_only=True)
 class Ticket(BaseModel):
     MODEL_TYPE: ClassVar[str] = "ticket"
 
@@ -51,7 +51,7 @@ class Ticket(BaseModel):
         booking_date = datetime.fromisoformat(kwargs["booking_date"])
 
         obj = cls(
-            ticket_type=str(kwargs["ticket_type"]),
+            type=str(kwargs["ticket_type"]),
             price=float(kwargs["price"]),
             booking_date=booking_date,
             luggage_limit=float(kwargs["luggage_limit"]),

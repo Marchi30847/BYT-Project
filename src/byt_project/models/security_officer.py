@@ -8,7 +8,7 @@ from .employee import Employee
 from .terminal import Terminal
 
 
-@dataclass
+@dataclass(kw_only=True)
 class SecurityOfficer(BaseModel, Employee):
     MODEL_TYPE: ClassVar[str] = "security_officer"
 

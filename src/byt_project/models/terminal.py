@@ -15,7 +15,7 @@ class TerminalStatus(Enum):
     CLOSED = "Closed"
 
 
-@dataclass
+@dataclass(kw_only=True)
 class Terminal(BaseModel):
     MODEL_TYPE: ClassVar[str] = "terminal"
 
@@ -44,5 +44,5 @@ class Terminal(BaseModel):
     def open(self):
         self.status = TerminalStatus.OPERATIONAL
 
-    def closeForMaintenance(self):
+    def closed_for_maintenance(self):
         self.status = TerminalStatus.UNDER_MAINTENANCE

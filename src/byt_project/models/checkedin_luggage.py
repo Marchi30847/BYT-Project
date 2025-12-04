@@ -9,7 +9,7 @@ from src.byt_project.models.luggage import Luggage
 
 
 
-@dataclass
+@dataclass(kw_only=True)
 class CheckedInLuggage(BaseModel, Luggage):
     MODEL_TYPE: ClassVar[str] = "carryon_luggage"
 

@@ -6,7 +6,7 @@ from src.byt_project.models.base import BaseModel
 from src.byt_project.models.security_officer import SecurityOfficer
 
 
-@dataclass
+@dataclass(kw_only=True)
 class Attendant(BaseModel, SecurityOfficer):
     MODEL_TYPE: ClassVar[str] = "dangerous_goods_qualified"
 

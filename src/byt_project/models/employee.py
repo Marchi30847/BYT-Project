@@ -14,7 +14,7 @@ class Shift(Enum):
     NIGHT = "night"
 
 
-@dataclass
+@dataclass(kw_only=True)
 class Employee(BaseModel):
     MODEL_TYPE: ClassVar[str] = "employee"
 

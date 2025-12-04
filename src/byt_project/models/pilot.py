@@ -2,9 +2,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import ClassVar, Mapping, Any, Self, Generator
+from typing import ClassVar, Mapping, Any, Self
 
-from .base import BaseModel
 from .employee import Employee
 from .flight import FlightStatus, Flight
 
@@ -14,8 +13,8 @@ class PilotRank(Enum):
     FIRST_OFFICER = "first_officer"
 
 
-@dataclass
-class Pilot(BaseModel, Employee):
+@dataclass(kw_only=True)
+class Pilot(Employee):
     MODEL_TYPE: ClassVar[str] = "pilot"
 
     licence_number: str

@@ -6,7 +6,7 @@ from typing import ClassVar, Any, TYPE_CHECKING
 from .base import BaseModel
 
 
-@dataclass
+@dataclass(kw_only=True)
 class Location:
     country: str
     city: str
@@ -14,7 +14,7 @@ class Location:
     longitude: float
 
 
-@dataclass
+@dataclass(kw_only=True)
 class Destination(BaseModel):
     MODEL_TYPE: ClassVar[str] = "destination"
 

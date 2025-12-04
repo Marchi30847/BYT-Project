@@ -25,7 +25,7 @@ class FlightStatus(Enum):
     CANCELLED = "Cancelled"
 
 
-@dataclass
+@dataclass(kw_only=True)
 class Flight(BaseModel):
     MODEL_TYPE: ClassVar[str] = "flight"
 

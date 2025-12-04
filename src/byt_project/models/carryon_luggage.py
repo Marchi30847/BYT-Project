@@ -8,7 +8,7 @@ from src.byt_project.models.security_scanner import SecurityScanner
 
 
 
-@dataclass
+@dataclass(kw_only=True)
 class CarryOnLuggage(BaseModel, Luggage):
     MODEL_TYPE: ClassVar[str] = "carryon_luggage"
 

@@ -11,7 +11,7 @@ class SpecializationArea(Enum):
     ARTIFACTS = "Artifacts"
     ELECTRONICS = "Electronics"
 
-@dataclass
+@dataclass(kw_only=True)
 class Attendant(BaseModel, SecurityOfficer):
     MODEL_TYPE: ClassVar[str] = "anti_smuggling_specialist"
 

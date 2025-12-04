@@ -12,7 +12,7 @@ class SecurityStatus(str, Enum):
     FLAGGED = "Flagged"
     CLEARED = "Cleared"
 
-@dataclass
+@dataclass(kw_only=True)
 class Luggage(BaseModel):
     MODEL_TYPE: ClassVar[str] = "luggage"
 

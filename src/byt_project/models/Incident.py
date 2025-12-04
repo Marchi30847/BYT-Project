@@ -10,7 +10,7 @@ class IncidentType(Enum):
     EXPLOSIVE_THREAT = "Explosive threat"
 
 
-@dataclass
+@dataclass(kw_only=True)
 class Incident(BaseModel):
     MODEL_TYPE: ClassVar[str] = "incident"
 
@@ -18,6 +18,7 @@ class Incident(BaseModel):
     type: IncidentType
     luggage: Luggage
 
+    #todo fix this
     @classmethod
     def createIncident(self, desc, type, luggage):
         return Incident(desc, type, luggage)

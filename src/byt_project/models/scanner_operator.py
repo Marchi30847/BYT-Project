@@ -8,7 +8,7 @@ from .employee import Employee
 from .scanner import Scanner
 
 
-@dataclass
+@dataclass(kw_only=True)
 class ScannerOperator(BaseModel, Employee):
     MODEL_TYPE: ClassVar[str] = "scanner_operator"
 
