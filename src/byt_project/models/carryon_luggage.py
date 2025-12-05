@@ -1,15 +1,17 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
-from typing import ClassVar
+from typing import ClassVar, TYPE_CHECKING
 
-from src.byt_project.models.base import BaseModel
-from src.byt_project.models.luggage import Luggage
-from src.byt_project.models.security_scanner import SecurityScanner
+from .base import BaseModel
+from .luggage import Luggage
 
-
+if TYPE_CHECKING:
+    from .security_scanner import SecurityScanner
 
 
 @dataclass(kw_only=True)
-class CarryOnLuggage(BaseModel, Luggage):
+class CarryOnLuggage(Luggage):
     MODEL_TYPE: ClassVar[str] = "carryon_luggage"
 
     fitsInCabin: bool

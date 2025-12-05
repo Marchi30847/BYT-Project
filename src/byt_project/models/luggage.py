@@ -1,9 +1,13 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
 from enum import Enum
-from typing import ClassVar
+from typing import ClassVar, TYPE_CHECKING
 
 from src.byt_project.models.base import BaseModel
-from src.byt_project.models.ticket import Ticket
+
+if TYPE_CHECKING:
+    from src.byt_project.models.ticket import Ticket
 
 
 class SecurityStatus(str, Enum):

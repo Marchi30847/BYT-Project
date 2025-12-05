@@ -33,6 +33,6 @@ class AirplaneRepository(BaseRepository[Airplane]):
     @override
     def _inject_dependencies(self, obj: Airplane) -> None:
         obj.set_loader("airline", self._airline_repo.find_by_id)
-        obj.set_loader("flights", self._flight_repo.find_all_by_airplane_ids)
+        obj.set_loader("flights", self._flight_repo.find_all_by_airplane_id)
         #TODO: seat handling
 

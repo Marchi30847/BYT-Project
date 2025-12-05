@@ -4,14 +4,14 @@ from dataclasses import dataclass, field
 from typing import ClassVar, TYPE_CHECKING, Any, cast
 
 from .base import BaseModel
+from .employee import Employee
 
 if TYPE_CHECKING:
-    from .employee import Employee
     from .scanner import Scanner
 
 
 @dataclass(kw_only=True)
-class ScannerOperator(BaseModel, Employee):
+class ScannerOperator(Employee):
     MODEL_TYPE: ClassVar[str] = "scanner_operator"
 
     authorized_scanner_types: list[str]

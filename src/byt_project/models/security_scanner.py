@@ -1,13 +1,17 @@
-from dataclasses import dataclass
-from typing import ClassVar
+from __future__ import annotations
 
-from src.byt_project.models.base import BaseModel
-from src.byt_project.models.bhss_scanner import Scanner
-from src.byt_project.models.carryon_luggage import CarryOnLuggage
+from dataclasses import dataclass
+from typing import ClassVar, TYPE_CHECKING
+
+from .base import BaseModel
+from .bhss_scanner import Scanner
+
+if TYPE_CHECKING:
+    from .carryon_luggage import CarryOnLuggage
 
 
 @dataclass(kw_only=True)
-class SecurityScanner(BaseModel, Scanner):
+class SecurityScanner(Scanner):
     MODEL_TYPE: ClassVar[str] = "security_scanner"
 
     xray_intensity: float

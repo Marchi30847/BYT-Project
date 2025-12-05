@@ -1,4 +1,4 @@
-from .base import Database
+from .database import Database
 from .base import BaseRepository
 
 from .base.base_repository import BaseRepository

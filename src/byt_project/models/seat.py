@@ -1,10 +1,12 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import ClassVar
+from typing import ClassVar, TYPE_CHECKING
 
 from .base import BaseModel
-from .ticket import Ticket
+
+if TYPE_CHECKING:
+    from .ticket import Ticket
 
 
 @dataclass(kw_only=True)

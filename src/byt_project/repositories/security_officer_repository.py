@@ -2,9 +2,9 @@ from __future__ import annotations
 
 from typing import TypeVar, override
 
-from . import EmployeeRepository
+from .employee_repository import EmployeeRepository
 from ..models import SecurityOfficer, Terminal, Airline
-from ..models.Incident import Incident
+from ..models.incident import Incident
 
 T = TypeVar("T", bound=SecurityOfficer)
 
@@ -12,7 +12,7 @@ T = TypeVar("T", bound=SecurityOfficer)
 class SecurityOfficerRepository(EmployeeRepository[T]):
     def __init__(self) -> None:
         super().__init__(
-            model_cls=T
+            model_cls=SecurityOfficer
         )
 
         self._incidents_repo: Incident | None = None

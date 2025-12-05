@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from . import FlightRepository
+from .flight_repository import FlightRepository
 from .airline_staff_repository import AirlineStaffRepository
 from ..models import Attendant
 

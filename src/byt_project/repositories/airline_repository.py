@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, override
 
-from . import EmployeeRepository
+from .employee_repository import EmployeeRepository
 from .airline_staff_repository import AirlineStaffRepository
 from .base.base_repository import BaseRepository
 from ..models import AirlineStaff

@@ -1,10 +1,14 @@
 from __future__ import annotations
 
-from . import AttendantRepository, DispatcherRepository, PilotRepository, GateRepository
+from .attendant_repository import AttendantRepository
+from .dispatcher_repository import DispatcherRepository
+from .pilot_repository import PilotRepository
+from .gate_repository import GateRepository
 from .airline_repository import AirlineRepository
 from .airline_staff_repository import AirlineStaffRepository
 from .airplane_repository import AirplaneRepository
 from .flight_repository import FlightRepository
+from ..models.airline_staff import AirlineStaff
 
 
 class Database:
@@ -15,7 +19,7 @@ class Database:
         self.flights = FlightRepository()
         self.attendants = AttendantRepository()
         self.pilots = PilotRepository()
-        self.airline_staff = AirlineStaffRepository()
+        self.airline_staff = AirlineStaffRepository(model_cls=AirlineStaff)
         self.gates = GateRepository()
 
         self.gates.set_flight_repo(self.flights)

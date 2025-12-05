@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import override
 
-from . import FlightRepository
+from .flight_repository import FlightRepository
 from .base import BaseRepository
 from ..models import Gate
 

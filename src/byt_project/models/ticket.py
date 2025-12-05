@@ -2,12 +2,14 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime
-from typing import ClassVar, List, Mapping, Any, Self
+from typing import ClassVar, List, Mapping, Any, Self, TYPE_CHECKING
 
 from .base import BaseModel
-from .luggage import Luggage
-from .seat import Seat
 from .flight import Flight
+
+if TYPE_CHECKING:
+    from .luggage import Luggage
+    from .seat import Seat
 
 
 @dataclass(kw_only=True)

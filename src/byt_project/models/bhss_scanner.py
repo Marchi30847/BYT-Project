@@ -1,13 +1,17 @@
-from dataclasses import dataclass
-from typing import ClassVar
+from __future__ import annotations
 
-from src.byt_project.models.base import BaseModel
-from src.byt_project.models.checkedin_luggage import CheckedInLuggage
-from src.byt_project.models.scanner import Scanner
+from dataclasses import dataclass
+from typing import ClassVar, TYPE_CHECKING
+
+from .base import BaseModel
+from .scanner import Scanner
+
+if TYPE_CHECKING:
+    from .checkedin_luggage import CheckedInLuggage
 
 
 @dataclass(kw_only=True)
-class BHSSScanner(BaseModel, Scanner):
+class BHSSScanner(Scanner):
     MODEL_TYPE: ClassVar[str] = "bhss_scanner"
 
     belt_id: int

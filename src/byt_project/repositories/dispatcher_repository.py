@@ -2,7 +2,9 @@ from __future__ import annotations
 
 from typing import TypeVar, override
 
-from . import EmployeeRepository, FlightRepository, TerminalRepository
+from .employee_repository import EmployeeRepository
+from .flight_repository import FlightRepository
+from .terminal_repository import TerminalRepository
 from ..models import Dispatcher
 
 T = TypeVar('T', bound=Dispatcher)
