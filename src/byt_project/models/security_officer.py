@@ -29,21 +29,6 @@ class SecurityOfficer(Employee):
     incident_ids: list[int] = field(default_factory=list, init=False)
     _incidents: list[Incident] | None = field(default=None, init=False, repr=False)
 
-    def __post_init__(self) -> None:
-        super().__post_init__()
-
-        # assigned_zone
-        if not isinstance(self.assigned_zone, str) or not self.assigned_zone.strip():
-            raise ValueError("assigned_zone must be a non-empty string")
-
-        # is_armed
-        if not isinstance(self.is_armed, bool):
-            raise TypeError("is_armed must be a boolean")
-
-        # on_duty
-        if not isinstance(self.on_duty, bool):
-            raise TypeError("on_duty must be a boolean")
-
     @property
     def terminal(self) -> Terminal | None:
         if self._terminal is not None:
@@ -125,6 +110,18 @@ class SecurityOfficer(Employee):
 
     def __post_init__(self) -> None:
         super().__post_init__()
+
+        # assigned_zone
+        if not isinstance(self.assigned_zone, str) or not self.assigned_zone.strip():
+            raise ValueError("assigned_zone must be a non-empty string")
+
+        # is_armed
+        if not isinstance(self.is_armed, bool):
+            raise TypeError("is_armed must be a boolean")
+
+        # on_duty
+        if not isinstance(self.on_duty, bool):
+            raise TypeError("on_duty must be a boolean")
 
     def to_dict(self) -> dict[str, Any]:
         data: dict[str, Any] = super().to_dict()
