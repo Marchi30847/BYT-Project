@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from .customer_repository import CustomerRepository
 # Импорты всех репозиториев
 from .route_repository import RouteRepository
 from .destination_repository import DestinationRepository
@@ -14,6 +15,7 @@ from .flight_repository import FlightRepository
 from .employee_repository import EmployeeRepository  # Для полноты
 from .terminal_repository import TerminalRepository  # <-- Добавлено
 from .security_officer_repository import SecurityOfficerRepository  # Для полноты
+from ..models import Customer
 
 from ..models.airline_staff import AirlineStaff
 from ..models.employee import Employee
@@ -26,6 +28,7 @@ class Database:
         self.destinations = DestinationRepository()
         self.routes = RouteRepository()
 
+        self.customers = CustomerRepository(model_cls=Customer)
         self.employees = EmployeeRepository(model_cls=Employee)
         self.airline_staff = AirlineStaffRepository(model_cls=AirlineStaff)
         self.security_officers = SecurityOfficerRepository()
