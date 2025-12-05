@@ -44,13 +44,19 @@ class BaseModel(Serializable):
         return id_field_val
 
     def _get_many_fk_value(self, objs_list: list[Any], ids_list: list[int]) -> list[int]:
-        current_ids: list[int] = [obj.id for obj in objs_list if obj is not None and getattr(obj, "id", None) is not None]
+        current_ids: list[int] = [obj.id for obj in objs_list if
+                                  obj is not None and getattr(obj, "id", None) is not None]
 
         if not current_ids and ids_list:
             return ids_list
 
         return current_ids
 
+    def _remove_cashed_fields(self, data: dict[str, Any]) -> None:
+        cashed_fields: set[str] = {f.name for f in fields(type(self)) if f.name.startswith("_")}
+
+        for field_name in cashed_fields:
+            data.pop(field_name, None)
 
     @staticmethod
     def _restore_fk(instance: Any, data: dict[str, Any], key: str, attr_name: str) -> None:
@@ -65,13 +71,16 @@ class BaseModel(Serializable):
             clean_ids: list[int] = [int(x) for x in raw_ids if x is not None]
             setattr(instance, attr_name, clean_ids)
 
-
     def to_dict(self) -> dict[str, Any]:
         if not is_dataclass(self):
             raise TypeError("BaseModel requires dataclass subclasses")
 
-        data = asdict(self)
+        data: dict[str, Any] = asdict(self)
+
         data["type"] = self.MODEL_TYPE
+
+        self._remove_cashed_fields(data)
+
         return data
 
     @classmethod
