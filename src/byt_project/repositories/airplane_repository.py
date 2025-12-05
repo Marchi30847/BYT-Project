@@ -14,12 +14,10 @@ if TYPE_CHECKING:
 class AirplaneRepository(BaseRepository[Airplane]):
     def __init__(self) -> None:
         super().__init__(
-            model_cls=Airplane,
-            data_dir=Path("data/airplanes.json"),
+            model_cls=Airplane
         )
         self._airline_repo: AirlineRepository | None = None
         self._flight_repo: FlightRepository | None = None
-
 
     def set_airline_repo(self, repo: AirlineRepository) -> None:
         self._airline_repo = repo
@@ -27,32 +25,14 @@ class AirplaneRepository(BaseRepository[Airplane]):
     def set_flight_repo(self, repo: FlightRepository) -> None:
         self._flight_repo = repo
 
-    @override
-    def find_by_id(self, obj_id: int) -> Airplane | None:
-        airplane: Airplane = super().find_by_id(obj_id)
-
-        if airplane:
-            self._hydrate(airplane)
-
-        return airplane
-
-    @override
-    def find_all(self) -> list[Airplane]:
-        airplanes: list[Airplane] = super().find_all()
-
-        for plane in airplanes:
-            self._hydrate(plane)
-
-        return airplanes
-
     def find_all_by_airline_id(self, airline_id: int) -> list[Airplane]:
         airplanes: list[Airplane] = self.find_all()
-        filtered_airplanes: list[Airplane] = list(filter(lambda airplane: airplane.id == airline_id, airplanes))
-        return filtered_airplanes
 
-    def _hydrate(self, airplane: Airplane) -> None:
-        if self._airline_repo and airplane.airline_id is not None:
-            airplane.airline = self._airline_repo.find_by_id(airplane.airline_id)
+        return [airplane for airplane in airplanes if airplane.airline_id == airline_id]
 
-        if self._flight_repo and airplane.id is not None:
-            airplane.flights = self._flight_repo.find_all_by_airplane_id(airplane.id)
+    @override
+    def _inject_dependencies(self, obj: Airplane) -> None:
+        obj.set_loader("airline", self._airline_repo.find_by_id)
+        obj.set_loader("flights", self._flight_repo.find_all_by_airplane_ids)
+        #TODO: seat handling
+
