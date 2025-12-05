@@ -21,6 +21,9 @@ class AirlineRepository(BaseRepository[Airline]):
     def set_airplane_repo(self, airplane_repo: AirplaneRepository) -> None:
         self._airplane_repo = airplane_repo
 
+    def set_airline_staff_repo(self, airline_staff_repo: AirlineStaffRepository) -> None:
+        self._airline_staff_repo = airline_staff_repo
+
     @override
     def _inject_dependencies(self, obj: Airline) -> None:
         obj.set_loader("parent_company", self.find_by_id)
