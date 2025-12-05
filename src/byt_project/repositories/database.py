@@ -11,6 +11,7 @@ class Database:
         self.airlines = AirlineRepository()
         self.airplanes = AirplaneRepository()
         self.flights = FlightRepository()
+        self.attendants = AttendantRepository()
 
         # self.airlines.set_airplane_repo(self.airplanes)
 
@@ -19,6 +20,4 @@ class Database:
 
         # self.flights.set_airplane_repo(self.airplanes)
 
-        # Attendants
-        self.attendants = AttendantRepository()
         self.attendants.set_flight_repo(self.flights)
