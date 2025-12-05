@@ -23,31 +23,6 @@ class ScannerOperator(Employee):
     def __post_init__(self) -> None:
         super().__post_init__()
 
-        # authorized_scanner_types — basic validation
-        if not isinstance(self.authorized_scanner_types, list):
-            raise TypeError("authorized_scanner_types must be a list")
-        if len(self.authorized_scanner_types) == 0:
-            raise ValueError("authorized_scanner_types cannot be empty")
-
-        # incidents_reported
-        if not isinstance(self.incidents_reported, int) or self.incidents_reported < 0:
-            raise ValueError("incidents_reported must be a non-negative integer")
-
-        # scanners — must be list
-        if not isinstance(self.scanners, list):
-            raise TypeError("scanners must be a list")
-
-        # simple validation of list content
-        for s in self.scanners:
-            if not isinstance(s, Scanner):
-                raise TypeError("all items in scanners must be Scanner instances")
-
-        # Fill scanner_ids automatically from scanners list
-        # self.scanner_ids = [
-        #     s.id for s in self.scanners
-        #     if getattr(s, "id", None) is not None
-        # ]
-
     def to_dict(self) -> dict[str, Any]:
         data: dict[str, Any] = super().to_dict()
 

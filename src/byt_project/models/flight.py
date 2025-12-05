@@ -55,39 +55,11 @@ class Flight(BaseModel):
         if self.arrival_time is not None and not isinstance(self.arrival_time, datetime):
             raise TypeError("arrival_time must be a datetime or None")
 
-        # status
-        if not isinstance(self.status, FlightStatus):
-            raise TypeError("status must be a FlightStatus enum value")
 
         # available_seats (will be overwritten later anyway)
         if not isinstance(self.available_seats, int) or self.available_seats < 0:
             raise ValueError("available_seats must be a non-negative integer")
 
-        # gate_id, captain_id, route_id, airplane_id...
-        if self.gate_id is not None and not isinstance(self.gate_id, int):
-            raise TypeError("gate_id must be int or None")
-
-        if self.captain_id is not None and not isinstance(self.captain_id, int):
-            raise TypeError("captain_id must be int or None")
-
-        if self.route_id is not None and not isinstance(self.route_id, int):
-            raise TypeError("route_id must be int or None")
-
-        if self.airplane_id is not None and not isinstance(self.airplane_id, int):
-            raise TypeError("airplane_id must be int or None")
-
-        if self.dispatcher_id is not None and not isinstance(self.dispatcher_id, int):
-            raise TypeError("dispatcher_id must be int or None")
-
-        if self.destination_id is not None and not isinstance(self.destination_id, int):
-            raise TypeError("destination_id must be int or None")
-
-        # final: assign available seats from airplane
-        if self._airplane:
-            # assumes airplane has .capacity attribute
-            self.available_seats = getattr(self._airplane, "capacity", 0)
-        else:
-            self.available_seats = 0
 
     @property
     def gate(self) -> Gate | None:

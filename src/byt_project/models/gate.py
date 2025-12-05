@@ -33,14 +33,6 @@ class Gate(BaseModel):
         if not isinstance(self.is_open, bool):
             raise TypeError("is_open must be a boolean")
 
-        # terminal_id
-        if self.terminal_id is not None and not isinstance(self.terminal_id, int):
-            raise TypeError("terminal_id must be int or None")
-
-        # _flights (lazy-loaded)
-        if self._flights is not None and not isinstance(self._flights, list):
-            raise TypeError("_flights must be a list or None")
-
     @property
     def terminal(self) -> Terminal | None:
         if self._terminal is not None:

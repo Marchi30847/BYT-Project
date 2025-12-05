@@ -39,9 +39,5 @@ class CheckedInLuggage(Luggage):
         if self.scannedIn is None:
             raise ValueError("scannedIn must not be None")
 
-        from .bhss_scanner import BHSSScanner
-        if not isinstance(self.scannedIn, BHSSScanner):
-            raise TypeError("scannedIn must be a BHSSScanner instance")
-
     def getScanResult(self):
         pass

@@ -32,10 +32,3 @@ class SecurityScanner(Scanner):
         # supports_3d_scan
         if not isinstance(self.supports_3d_scan, bool):
             raise TypeError("SecurityScanner.supports_3d_scan must be a boolean")
-
-        # scannedLuggage list
-        for item in self.scannedLuggage:
-            if not isinstance(item, CarryOnLuggage):
-                raise TypeError(
-                    "All items in SecurityScanner.scannedLuggage must be CarryOnLuggage instances"
-                )

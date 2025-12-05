@@ -81,21 +81,5 @@ class Ticket(BaseModel):
         if not isinstance(self.luggage_limit, (int, float)) or self.luggage_limit < 0:
             raise ValueError("Ticket.luggage_limit must be a non-negative number")
 
-        from .seat import Seat
-        if not isinstance(self.seat, Seat):
-            raise TypeError("Ticket.seat must be a Seat instance")
-
-        from .luggage import Luggage
-        if not isinstance(self.luggage, list):
-            raise TypeError("Ticket.luggage must be a list")
-
-        for item in self.luggage:
-            if not isinstance(item, Luggage):
-                raise TypeError("Every item in Ticket.luggage must be a Luggage instance")
-
-        from .flight import Flight
-        if self.flight is not None and not isinstance(self.flight, Flight):
-            raise TypeError("Ticket.flight must be a Flight instance or None")
-
         if not isinstance(self.is_flagged, bool):
             raise TypeError("Ticket.is_flagged must be a boolean")

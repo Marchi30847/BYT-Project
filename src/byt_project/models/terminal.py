@@ -57,32 +57,6 @@ class Terminal(BaseModel):
         if not isinstance(self.area, int) or self.area <= 0:
             raise ValueError("Terminal.area must be a positive integer")
 
-        # _dispatchers (lazy list)
-        if self._dispatchers is not None:
-            if not isinstance(self._dispatchers, list):
-                raise TypeError("_dispatchers must be a list or None")
-            for d in self._dispatchers:
-                if not isinstance(d, Dispatcher):
-                    raise TypeError("All items in _dispatchers must be Dispatcher instances")
-
-        # _security_officers (lazy list)
-        if self._security_officers is not None:
-            if not isinstance(self._security_officers, list):
-                raise TypeError("_security_officers must be a list or None")
-            for s in self._security_officers:
-                if not isinstance(s, SecurityOfficer):
-                    raise TypeError("All items in _security_officers must be SecurityOfficer instances")
-
-        # _gates (lazy dict mapping number → Gate)
-        if self._gates is not None:
-            if not isinstance(self._gates, dict):
-                raise TypeError("_gates must be a dict[int, Gate] or None")
-
-            for key, value in self._gates.items():
-                if not isinstance(key, int):
-                    raise TypeError("Gate dictionary keys must be integers (gate numbers)")
-                if not isinstance(value, Gate):
-                    raise TypeError("Gate dictionary values must be Gate objects")
 
     @property
     def dispatchers(self) -> list[Dispatcher]:

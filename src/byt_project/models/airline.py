@@ -53,10 +53,6 @@ class Airline(BaseModel):
         if not isinstance(self.icao_code, str) or len(self.icao_code) != 3:
             raise ValueError("icao_code must be exactly 3 characters")
 
-        # parent_company_id
-        if self.parent_company_id is not None and not isinstance(self.parent_company_id, int):
-            raise TypeError("parent_company_id must be int or None")
-
     @property
     def parent_company(self) -> Airline | None:
         if self._parent_company is not None:

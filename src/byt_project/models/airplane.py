@@ -55,10 +55,6 @@ class Airplane(BaseModel):
         if not (1900 <= self.year_of_manufacture <= current_year):
             raise ValueError("year_of_manufacture must be between 1900 and the current year")
 
-        # airline_id
-        if self.airline_id is not None and not isinstance(self.airline_id, int):
-            raise TypeError("airline_id must be int or None")
-
 
     @property
     def airline(self) -> Airline | None:

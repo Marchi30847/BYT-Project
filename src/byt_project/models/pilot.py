@@ -32,17 +32,10 @@ class Pilot(AirlineStaff):
         if not isinstance(self.licence_number, str) or not self.licence_number.strip():
             raise ValueError("licence_number must be a non-empty string")
 
-        # rank
-        if not isinstance(self.rank, PilotRank):
-            raise TypeError("rank must be an instance of PilotRank")
-
         # flight_hours
         if not isinstance(self.flight_hours, int) or self.flight_hours < 0:
             raise ValueError("flight_hours must be a non-negative integer")
 
-        # _flights (lazy-loaded list)
-        if self._flights is not None and not isinstance(self._flights, list):
-            raise TypeError("_flights must be a list or None")
 
     @property
     def flights(self) -> list[Flight]:
