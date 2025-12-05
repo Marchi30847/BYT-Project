@@ -29,40 +29,6 @@ class SecurityOfficer(Employee):
     incident_ids: list[int] = field(default_factory=list, init=False)
     _incidents: list[Incident] | None = field(default=None, init=False, repr=False)
 
-    def __post_init__(self) -> None:
-        super().__post_init__()
-
-        # assigned_zone
-        if not isinstance(self.assigned_zone, str) or not self.assigned_zone.strip():
-            raise ValueError("assigned_zone must be a non-empty string")
-
-        # is_armed
-        if not isinstance(self.is_armed, bool):
-            raise TypeError("is_armed must be a boolean")
-
-        # on_duty
-        if not isinstance(self.on_duty, bool):
-            raise TypeError("on_duty must be a boolean")
-
-        # terminal_id
-        if self.terminal_id is not None and not isinstance(self.terminal_id, int):
-            raise TypeError("terminal_id must be int or None")
-
-        # manager_id
-        if self.manager_id is not None and not isinstance(self.manager_id, int):
-            raise TypeError("manager_id must be int or None")
-
-        # incident_ids - only list check
-        if not isinstance(self.incident_ids, list):
-            raise TypeError("incident_ids must be a list")
-
-        # _subordinates, _incidents — only check container type, not content
-        if self._subordinates is not None and not isinstance(self._subordinates, list):
-            raise TypeError("_subordinates must be a list or None")
-
-        if self._incidents is not None and not isinstance(self._incidents, list):
-            raise TypeError("_incidents must be a list or None")
-
     @property
     def terminal(self) -> Terminal | None:
         if self._terminal is not None:
@@ -144,6 +110,18 @@ class SecurityOfficer(Employee):
 
     def __post_init__(self) -> None:
         super().__post_init__()
+
+        # assigned_zone
+        if not isinstance(self.assigned_zone, str) or not self.assigned_zone.strip():
+            raise ValueError("assigned_zone must be a non-empty string")
+
+        # is_armed
+        if not isinstance(self.is_armed, bool):
+            raise TypeError("is_armed must be a boolean")
+
+        # on_duty
+        if not isinstance(self.on_duty, bool):
+            raise TypeError("on_duty must be a boolean")
 
     def to_dict(self) -> dict[str, Any]:
         data: dict[str, Any] = super().to_dict()
