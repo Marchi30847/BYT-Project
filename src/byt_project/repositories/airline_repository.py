@@ -2,14 +2,12 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, override
 
-from .employee_repository import EmployeeRepository
-from .airline_staff_repository import AirlineStaffRepository
 from .base.base_repository import BaseRepository
-from ..models import AirlineStaff
 from ..models.airline import Airline
 
 if TYPE_CHECKING:
     from .airplane_repository import AirplaneRepository
+    from .airline_staff_repository import AirlineStaffRepository
 
 
 class AirlineRepository(BaseRepository[Airline]):
@@ -31,9 +29,7 @@ class AirlineRepository(BaseRepository[Airline]):
         if self._airplane_repo:
             obj.set_loader("airplanes", self._airplane_repo.find_all_by_airline_id)
         if self._airline_staff_repo:
-            obj.set_loader("employees", self._airline_staff_repo.find_all_by_airline_id)
+            obj.set_loader("airline_staff", self._airline_staff_repo.find_all_by_airline_id)
 
     def find_all_by_parent_id(self, parent_id: int) -> list[Airline]:
-        airlines: list[Airline] = self.find_all()
-
-        return [a for a in airlines if a.parent_company_id == parent_id]
+        return [a for a in self.find_all() if a.parent_company_id == parent_id]

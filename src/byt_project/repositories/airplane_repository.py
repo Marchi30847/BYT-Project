@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, override
-
 from .base.base_repository import BaseRepository
 from ..models.airplane import Airplane
 
@@ -29,7 +28,7 @@ class AirplaneRepository(BaseRepository[Airplane]):
 
     @override
     def _inject_dependencies(self, obj: Airplane) -> None:
-        obj.set_loader("airline", self._airline_repo.find_by_id)
-        obj.set_loader("flights", self._flight_repo.find_all_by_airplane_id)
-        #TODO: seat handling
-
+        if self._airline_repo:
+            obj.set_loader("airline", self._airline_repo.find_by_id)
+        if self._flight_repo:
+            obj.set_loader("flights", self._flight_repo.find_all_by_airplane_id)

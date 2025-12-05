@@ -1,9 +1,8 @@
 from __future__ import annotations
 
-from typing import TypeVar, TYPE_CHECKING, override
+from typing import TypeVar, TYPE_CHECKING, override, Type
 
 from .employee_repository import EmployeeRepository
-from .base.base_repository import BaseRepository
 from ..models.airline_staff import AirlineStaff
 
 if TYPE_CHECKING:
@@ -13,7 +12,7 @@ T = TypeVar("T", bound=AirlineStaff)
 
 
 class AirlineStaffRepository(EmployeeRepository[T]):
-    def __init__(self, model_cls: type[T]) -> None:
+    def __init__(self, model_cls: Type[T]) -> None:
         super().__init__(model_cls=model_cls)
         self._airline_repo: AirlineRepository | None = None
 
@@ -26,6 +25,4 @@ class AirlineStaffRepository(EmployeeRepository[T]):
             staff.set_loader("airline", self._airline_repo.find_by_id)
 
     def find_all_by_airline_id(self, airline_id: int) -> list[T]:
-        all_staff: list[T] = self.find_all()
-
-        return [staff for staff in all_staff if staff.airline_id == airline_id]
+        return [staff for staff in self.find_all() if staff.airline_id == airline_id]

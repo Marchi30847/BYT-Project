@@ -24,8 +24,7 @@ class BaseModel(Serializable):
         default_factory=dict, init=False, repr=False, compare=False
     )
 
-    def __post_init__(self) -> None:
-        pass
+    def __post_init__(self) -> None: ...
 
     def set_loader(self, field_name: str, loader_func: Callable[..., Any]) -> None:
         self._loaders[field_name] = loader_func
