@@ -18,3 +18,6 @@ class FlightRepository(BaseRepository[Flight]):
 
     def find_all_by_airplane_ids(self, airplane_ids: list[int]) -> list[Flight]:
         pass
+
+    def find_all_by_dispatcher_id(self, dispatcher_id: int) -> list[Flight]:
+        pass

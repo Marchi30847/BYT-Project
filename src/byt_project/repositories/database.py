@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from . import AttendantRepository
+from . import AttendantRepository, DispatcherRepository
 from .airline_repository import AirlineRepository
 from .airplane_repository import AirplaneRepository
 from .flight_repository import FlightRepository
@@ -10,8 +10,11 @@ class Database:
     def __init__(self) -> None:
         self.airlines = AirlineRepository()
         self.airplanes = AirplaneRepository()
+        self.dispatcher = DispatcherRepository()
         self.flights = FlightRepository()
         self.attendants = AttendantRepository()
+
+        self.dispatcher.set_flights(self.flights)
 
         # self.airlines.set_airplane_repo(self.airplanes)
 
