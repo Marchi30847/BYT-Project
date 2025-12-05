@@ -71,8 +71,7 @@ class BaseRepository(Generic[T]):
         with meta_path.open("w", encoding="utf-8") as f:
             json.dump(meta, f, indent=2, ensure_ascii=False)
 
-    def _inject_dependencies(self, rows: list[dict]) -> None:
-        ...
+    def _inject_dependencies(self, obj: T) -> None: ...
 
     def create(self, obj: T) -> T:
         rows: list[dict[str, Any]] = self._load_rows()

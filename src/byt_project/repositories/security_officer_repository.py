@@ -26,3 +26,6 @@ class SecurityOfficerRepository(EmployeeRepository[T]):
         officers: list[SecurityOfficer] = self.find_all()
 
         return [a for a in officers if a.parent_company_id == parent_id]
+
+    def find_all_by_terminal_id(self, terminal_id: int) -> list[SecurityOfficer]:
+        return [s for s in self.find_all() if s.terminal_id == terminal_id]

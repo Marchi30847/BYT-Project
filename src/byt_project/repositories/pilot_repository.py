@@ -1,8 +1,12 @@
 from __future__ import annotations
 
-from .flight_repository import FlightRepository
+from typing import TYPE_CHECKING, override
+
 from .airline_staff_repository import AirlineStaffRepository
-from ..models import Pilot
+from ..models.pilot import Pilot
+
+if TYPE_CHECKING:
+    from .flight_repository import FlightRepository
 
 
 class PilotRepository(AirlineStaffRepository[Pilot]):
@@ -11,8 +15,12 @@ class PilotRepository(AirlineStaffRepository[Pilot]):
 
         self._flight_repo: FlightRepository | None = None
 
-    def _inject_dependencies(self, obj: Pilot) -> None:
-        obj.set_loader("flights", self._flight_repo.find_all_by_pilot_id)
-
     def set_flight_repo(self, flight_repo: FlightRepository) -> None:
         self._flight_repo = flight_repo
+
+    @override
+    def _inject_dependencies(self, obj: Pilot) -> None:
+        super()._inject_dependencies(obj)
+
+        if self._flight_repo:
+            obj.set_loader("flights", self._flight_repo.find_all_by_pilot_id)

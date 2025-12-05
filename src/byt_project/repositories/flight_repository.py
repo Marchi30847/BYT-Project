@@ -19,6 +19,7 @@ if TYPE_CHECKING:
 class FlightRepository(BaseRepository[Flight]):
     def __init__(self) -> None:
         super().__init__(model_cls=Flight)
+
         self._gate_repo: GateRepository | None = None
         self._pilot_repo: PilotRepository | None = None
         self._attendant_repo: AttendantRepository | None = None
@@ -84,11 +85,11 @@ class FlightRepository(BaseRepository[Flight]):
     def find_all_by_dispatcher_id(self, dispatcher_id: int) -> list[Flight]:
         return [f for f in self.find_all() if f.dispatcher_id == dispatcher_id]
 
-    def find_all_by_pilot_ids(self, pilot_ids: list[int]) -> list[Flight]:
-        return [f for f in self.find_all() if any(pid in f.pilot_ids for pid in pilot_ids)]
-
     def find_all_by_pilot_id(self, pilot_id: int) -> list[Flight]:
         return [f for f in self.find_all() if pilot_id in f.pilot_ids]
 
     def find_all_by_gate_id(self, gate_id: int) -> list[Flight]:
         return [f for f in self.find_all() if f.gate_id == gate_id]
+
+    def find_all_by_destination_id(self, destination_id: int) -> list[Flight]:
+        return [f for f in self.find_all() if f.destination_id == destination_id]
