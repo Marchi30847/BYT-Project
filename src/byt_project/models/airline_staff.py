@@ -14,23 +14,39 @@ class AirlineStaff(Employee):
     MODEL_TYPE: ClassVar[str] = "airline_staff"
 
     airline_id: int | None = field(default=None, init=False)
-    airline: Airline | None = field(default=None)
+    _airline: Airline | None = field(default=None, init=False, repr=False)
+
+    @property
+    def airline(self) -> Airline | None:
+        if self._airline is not None:
+            return self._airline
+
+        if self.airline_id is None:
+            return None
+
+        loaded: Airline | None = self._run_loader("airline", self.airline_id)
+        if loaded:
+            self._airline = loaded
+
+        return self._airline
+
+    @airline.setter
+    def airline(self, value: Airline | None) -> None:
+        self._airline = value
+
+        if value and getattr(value, 'id', None) is not None:
+            self.airline_id = value.id
+        else:
+            self.airline_id = None
+
 
     def __post_init__(self) -> None:
-        if self.airline and getattr(self.airline, 'id', None) is not None:
-            self.airline_id = self.airline.id
+        super().__post_init__()
 
     def to_dict(self) -> dict[str, Any]:
         data: dict[str, Any] = super().to_dict()
 
-        if self.airline:
-            data["airline_id"] = self.airline.id
-        elif self.airline_id is not None:
-            data["airline_id"] = self.airline_id
-        else:
-            data["airline_id"] = None
-
-        data.pop("airline", None)
+        data["airline_id"] = self._get_fk_value(self._airline, self.airline_id)
 
         return data
 
@@ -38,7 +54,6 @@ class AirlineStaff(Employee):
     def from_dict(cls, data: dict[str, Any]) -> AirlineStaff:
         instance = cast(AirlineStaff, super().from_dict(data))
 
-        raw_airline_id: str | int | None = data.get("airline_id")
-        instance.airline_id = int(raw_airline_id) if raw_airline_id is not None else None
+        cls._restore_fk(instance, data, "airline_id", "airline_id")
 
         return instance
