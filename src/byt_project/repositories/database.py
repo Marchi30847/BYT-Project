@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from . import AttendantRepository, DispatcherRepository
+from . import AttendantRepository, DispatcherRepository, PilotRepository
 from .airline_repository import AirlineRepository
 from .airplane_repository import AirplaneRepository
 from .flight_repository import FlightRepository
@@ -13,6 +13,7 @@ class Database:
         self.dispatcher = DispatcherRepository()
         self.flights = FlightRepository()
         self.attendants = AttendantRepository()
+        self.pilots = PilotRepository()
 
         self.dispatcher.set_flights(self.flights)
 
@@ -24,3 +25,4 @@ class Database:
         # self.flights.set_airplane_repo(self.airplanes)
 
         self.attendants.set_flight_repo(self.flights)
+        self.pilots.set_flight_repo(self.flights)

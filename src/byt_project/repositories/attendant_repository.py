@@ -2,8 +2,7 @@ from __future__ import annotations
 
 from . import FlightRepository
 from .airline_staff_repository import AirlineStaffRepository
-from .base import BaseRepository
-from ..models import Attendant, AirlineStaff
+from ..models import Attendant
 
 
 class AttendantRepository(AirlineStaffRepository[Attendant]):
