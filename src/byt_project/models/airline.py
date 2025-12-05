@@ -7,6 +7,7 @@ from .base import BaseModel
 
 if TYPE_CHECKING:
     from .airplane import Airplane
+    from .airline_staff import AirlineStaff
 
 
 @dataclass(kw_only=True)
@@ -24,6 +25,7 @@ class Airline(BaseModel):
 
     _airplanes: list[Airplane] | None = field(default=None, init=False, repr=False)
     _subcompanies: list[Airline] | None = field(default=None, init=False, repr=False)
+    _airline_staff: list[AirlineStaff] | None = field(default=None, init=False, repr=False)
 
     max_delay_compensation: ClassVar[float] = 0.40
 
@@ -86,6 +88,23 @@ class Airline(BaseModel):
     def subcompanies(self, value: list[Airline]) -> None:
         self._subcompanies = value
 
+    @property
+    def airline_staff(self) -> list[AirlineStaff]:
+        if self._airline_staff is not None:
+            return self._airline_staff
+
+        if self.id is not None:
+            loaded: list[AirlineStaff] | None = self._run_loader("airline_staff", self.id)
+            if loaded is not None:
+                self._airline_staff = loaded
+                return self._airline_staff
+
+        self._airline_staff = []
+        return self._airline_staff
+
+    @airline_staff.setter
+    def airline_staff(self, value: list[AirlineStaff]) -> None:
+        self._airline_staff = value
 
     def __post_init__(self) -> None:
         super().__post_init__()

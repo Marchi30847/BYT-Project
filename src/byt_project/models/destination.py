@@ -1,9 +1,12 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, fields
-from typing import ClassVar, Any, cast
+from dataclasses import dataclass, field, fields
+from typing import ClassVar, Any, cast, TYPE_CHECKING
 
 from .base import BaseModel
+
+if TYPE_CHECKING:
+    from .flight import Flight
 
 
 @dataclass(kw_only=True)
@@ -22,15 +25,43 @@ class Destination(BaseModel):
     location: Location
     airport: str
 
+    _flights: list[Flight] | None = field(default=None, init=False, repr=False)
+
+    @property
+    def flights(self) -> list[Flight]:
+        if self._flights is not None:
+            return self._flights
+
+        if self.id is not None:
+            loaded: list[Flight] | None = self._run_loader("flights", self.id)
+            if loaded is not None:
+                self._flights = loaded
+                return self._flights
+
+        self._flights = []
+        return self._flights
+
+    @flights.setter
+    def flights(self, value: list[Flight]) -> None:
+        self._flights = value
+
+
+    def __post_init__(self) -> None:
+        super().__post_init__()
+
+    def to_dict(self) -> dict[str, Any]:
+        data = super().to_dict()
+
+        return data
+
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> Destination:
         data_copy: dict[str, Any] = dict(data)
 
-        loc_data: dict[str, Any] = data_copy.get("location")
-
-        if isinstance(loc_data, dict):
+        raw_loc_data: Any = data_copy.get("location")
+        if isinstance(raw_loc_data, dict):
             loc_valid_fields: set[str] = {f.name for f in fields(Location)}
-            clean_loc_data: dict[str, Any] = {k: v for k, v in loc_data.items() if k in loc_valid_fields}
+            clean_loc_data: dict[str, Any] = {k: v for k, v in raw_loc_data.items() if k in loc_valid_fields}
 
             data_copy["location"] = Location(**clean_loc_data)
 

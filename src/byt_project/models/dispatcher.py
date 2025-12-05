@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import ClassVar, Any, TYPE_CHECKING, cast
 
-from . import AirlineStaff
+from .airline_staff import AirlineStaff
 
 if TYPE_CHECKING:
     from .flight import Flight
@@ -17,28 +17,59 @@ class Dispatcher(AirlineStaff):
     specialization: str
     certification_level: int
 
-
     terminal_id: int | None = field(default=None, init=False)
-    terminal: Terminal | None = field(default=None)
+    _terminal: Terminal | None = field(default=None, init=False, repr=False)
 
-    flights: list[Flight] = field(default_factory=list)
+    _flights: list[Flight] | None = field(default=None, init=False, repr=False)
+
+    @property
+    def terminal(self) -> Terminal | None:
+        if self._terminal is not None:
+            return self._terminal
+
+        if self.terminal_id is None:
+            return None
+
+        loaded: Terminal | None = self._run_loader("terminal", self.terminal_id)
+        if loaded:
+            self._terminal = loaded
+
+        return self._terminal
+
+    @terminal.setter
+    def terminal(self, value: Terminal | None) -> None:
+        self._terminal = value
+        if value and getattr(value, 'id', None) is not None:
+            self.terminal_id = value.id
+        else:
+            self.terminal_id = None
+
+    @property
+    def flights(self) -> list[Flight]:
+        if self._flights is not None:
+            return self._flights
+
+        if self.id is not None:
+            loaded: list[Flight] | None = self._run_loader("flights", self.id)
+            if loaded is not None:
+                self._flights = loaded
+                return self._flights
+
+        self._flights = []
+        return self._flights
+
+    @flights.setter
+    def flights(self, value: list[Flight]) -> None:
+        self._flights = value
+
 
     def __post_init__(self) -> None:
-        if self.terminal and getattr(self.terminal, 'id', None) is not None:
-            self.terminal_id = self.terminal.id
+        super().__post_init__()
 
     def to_dict(self) -> dict[str, Any]:
         data: dict[str, Any] = super().to_dict()
 
-        if self.terminal:
-            data["terminal_id"] = self.terminal.id
-        elif self.terminal_id is not None:
-            data["terminal_id"] = self.terminal_id
-        else:
-            data["terminal_id"] = None
-
-        data.pop("terminal", None)
-        data.pop("flights", None)
+        data["terminal_id"] = self._get_fk_value(self._terminal, self.terminal_id)
 
         return data
 
@@ -46,10 +77,6 @@ class Dispatcher(AirlineStaff):
     def from_dict(cls, data: dict[str, Any]) -> Dispatcher:
         instance = cast(Dispatcher, super().from_dict(data))
 
-        raw_airline_id: str | int | None = data.get("airline_id")
-        instance.airline_id = int(raw_airline_id) if raw_airline_id is not None else None
-
-        raw_terminal_id: str | int | None = data.get("terminal_id")
-        instance.terminal_id = int(raw_terminal_id) if raw_terminal_id is not None else None
+        cls._restore_fk(instance, data, "terminal_id", "terminal_id")
 
         return instance

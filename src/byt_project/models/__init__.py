@@ -65,5 +65,5 @@ __all__ = [
     "Scanner",
     "SecurityScanner",
     "BHSSScanner",
-    "Incident",
+    "incident.py",
 ]

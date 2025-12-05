@@ -21,6 +21,10 @@ class Employee(BaseModel):
     salary: float
     shift: Shift
 
+
+    def __post_init__(self) -> None:
+        super().__post_init__()
+
     def to_dict(self) -> dict[str, Any]:
         data = super().to_dict()
 
@@ -41,6 +45,7 @@ class Employee(BaseModel):
         if raw_shift in {s.value for s in Shift}:
             data_copy["shift"] = Shift(raw_shift)
         else:
+            # todo validate
             data_copy["shift"] = None
 
         instance = cast(Employee, super().from_dict(data_copy))

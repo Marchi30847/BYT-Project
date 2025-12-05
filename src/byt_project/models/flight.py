@@ -15,6 +15,7 @@ if TYPE_CHECKING:
     from .gate import Gate
     from .pilot import Pilot
     from .route import Route
+    from .customer import Customer
 
 
 class FlightStatus(Enum):
@@ -37,42 +38,224 @@ class Flight(BaseModel):
     available_seats: int = field(init=False, default=0)
 
     gate_id: int | None = field(default=None, init=False)
-    gate: Gate | None = field(default=None)
+    _gate: Gate | None = field(default=None, init=False, repr=False)
+
+    @property
+    def gate(self) -> Gate | None:
+        if self._gate is not None:
+            return self._gate
+
+        if self.gate_id is None:
+            return None
+
+        loaded: Gate | None = self._run_loader("gate", self.gate_id)
+        if loaded:
+            self._gate = loaded
+
+        return self._gate
+
+    @gate.setter
+    def gate(self, value: Gate | None) -> None:
+        self._gate = value
+        if value and getattr(value, 'id', None) is not None:
+            self.gate_id = value.id
+        else:
+            self.gate_id = None
 
     captain_id: int | None = field(default=None, init=False)
-    captain: Pilot | None = field(default=None)
+    _captain: Pilot | None = field(default=None, init=False, repr=False)
+
+    @property
+    def captain(self) -> Pilot | None:
+        if self._captain is not None:
+            return self._captain
+
+        if self.captain_id is None:
+            return None
+
+        loaded: Pilot | None = self._run_loader("captain", self.captain_id)
+        if loaded:
+            self._captain = loaded
+
+        return self._captain
+
+    @captain.setter
+    def captain(self, value: Pilot | None) -> None:
+        self._captain = value
+        if value and getattr(value, 'id', None) is not None:
+            self.captain_id = value.id
+        else:
+            self.captain_id = None
 
     route_id: int | None = field(default=None, init=False)
-    route: Route | None = field(default=None)
+    _route: Route | None = field(default=None, init=False, repr=False)
+
+    @property
+    def route(self) -> Route | None:
+        if self._route is not None:
+            return self._route
+
+        if self.route_id is None:
+            return None
+
+        loaded: Route | None = self._run_loader("route", self.route_id)
+        if loaded:
+            self._route = loaded
+
+        return self._route
+
+    @route.setter
+    def route(self, value: Route | None) -> None:
+        self._route = value
+        if value and getattr(value, 'id', None) is not None:
+            self.route_id = value.id
+        else:
+            self.route_id = None
 
     airplane_id: int | None = field(default=None, init=False)
-    airplane: Airplane | None = field(default=None)
+    _airplane: Airplane | None = field(default=None, init=False, repr=False)
+
+    @property
+    def airplane(self) -> Airplane | None:
+        if self._airplane is not None:
+            return self._airplane
+
+        if self.airplane_id is None:
+            return None
+
+        loaded: Airplane | None = self._run_loader("airplane", self.airplane_id)
+        if loaded:
+            self._airplane = loaded
+
+        return self._airplane
+
+    @airplane.setter
+    def airplane(self, value: Airplane | None) -> None:
+        self._airplane = value
+        if value and getattr(value, 'id', None) is not None:
+            self.airplane_id = value.id
+        else:
+            self.airplane_id = None
 
     dispatcher_id: int | None = field(default=None, init=False)
-    dispatcher: Dispatcher | None = field(default=None)
+    _dispatcher: Dispatcher | None = field(default=None, init=False, repr=False)
+
+    @property
+    def dispatcher(self) -> Dispatcher | None:
+        if self._dispatcher is not None:
+            return self._dispatcher
+
+        if self.dispatcher_id is None:
+            return None
+
+        loaded: Dispatcher | None = self._run_loader("dispatcher", self.dispatcher_id)
+        if loaded:
+            self._dispatcher = loaded
+
+        return self._dispatcher
+
+    @dispatcher.setter
+    def dispatcher(self, value: Dispatcher | None) -> None:
+        self._dispatcher = value
+        if value and getattr(value, 'id', None) is not None:
+            self.dispatcher_id = value.id
+        else:
+            self.dispatcher_id = None
 
     destination_id: int | None = field(default=None, init=False)
-    destination: Destination | None = field(default=None)
+    _destination: Destination | None = field(default=None, init=False, repr=False)
+
+    @property
+    def destination(self) -> Destination | None:
+        if self._destination is not None:
+            return self._destination
+
+        if self.destination_id is None:
+            return None
+
+        loaded: Destination | None = self._run_loader("destination", self.destination_id)
+        if loaded:
+            self._destination = loaded
+
+        return self._destination
+
+    @destination.setter
+    def destination(self, value: Destination | None) -> None:
+        self._destination = value
+        if value and getattr(value, 'id', None) is not None:
+            self.destination_id = value.id
+        else:
+            self.destination_id = None
 
     pilot_ids: list[int] = field(default_factory=list, init=False)
-    pilots: list[Pilot] = field(default_factory=list)
+    _pilots: list[Pilot] | None = field(default=None, init=False, repr=False)
+
+    @property
+    def pilots(self) -> list[Pilot]:
+        if self._pilots is not None:
+            return self._pilots
+
+        if self.pilot_ids:
+            loaded: list[Pilot] | None = self._run_loader("pilots", self.pilot_ids)
+            if loaded is not None :
+                self._pilots = loaded
+                return self._pilots
+
+        self._pilots = []
+        return self._pilots
+
+    @pilots.setter
+    def pilots(self, value: list[Pilot]) -> None:
+        self._pilots = value
+        self.pilot_ids = [p.id for p in value if p.id is not None]
 
     attendant_ids: list[int] = field(default_factory=list, init=False)
-    attendants: list[Attendant] = field(default_factory=list)
+    _attendants: list[Attendant] | None = field(default=None, init=False, repr=False)
+
+    @property
+    def attendants(self) -> list[Attendant]:
+        if self._attendants is not None:
+            return self._attendants
+
+        if self.attendant_ids:
+            loaded: list[Attendant] | None = self._run_loader("attendants", self.attendant_ids)
+            if loaded is not None :
+                self._attendants = loaded
+                return self._attendants
+
+        self._attendants = []
+        return self._attendants
+
+    @attendants.setter
+    def attendants(self, value: list[Attendant]) -> None:
+        self._attendants = value
+        self.attendant_ids = [a.id for a in value if a.id is not None]
+
+    _customers: list[Customer] | None = field(default=None, init=False, repr=False)
+
+    @property
+    def customers(self) -> list[Customer]:
+        if self._customers is not None: return self._customers
+
+        if self.id is not None:
+            loaded: list[Customer] | None = self._run_loader("customers", self.id)
+            if loaded is not None :
+                self._customers = loaded
+                return self._customers
+
+        self._customers = []
+        return self._customers
+
+    @customers.setter
+    def customers(self, value: list[Customer]) -> None:
+        self._customers = value
+
 
     def __post_init__(self) -> None:
-        if self.gate and getattr(self.gate, 'id', None): self.gate_id = self.gate.id
-        if self.captain and getattr(self.captain, 'id', None): self.captain_id = self.captain.id
-        if self.route and getattr(self.route, 'id', None): self.route_id = self.route.id
-        if self.airplane and getattr(self.airplane, 'id', None): self.airplane_id = self.airplane.id
-        if self.dispatcher and getattr(self.dispatcher, 'id', None): self.dispatcher_id = self.dispatcher.id
-        if self.destination and getattr(self.destination, 'id', None): self.destination_id = self.destination.id
+        super().__post_init__()
 
-        self.pilot_ids = [p.id for p in self.pilots if getattr(p, 'id', None) is not None]
-        self.attendant_ids = [a.id for a in self.attendants if getattr(a, 'id', None) is not None]
-
-        if self.airplane:
-            self.available_seats = self.airplane.capacity
+        if self._airplane:
+            self.available_seats = self._airplane.capacity
         else:
             self.available_seats = 0
 
@@ -82,37 +265,17 @@ class Flight(BaseModel):
         data["departure_time"] = self.departure_time.isoformat()
         if self.arrival_time:
             data["arrival_time"] = self.arrival_time.isoformat()
-
         data["status"] = self.status.value
 
-        def save_fk(obj_field, id_field, key):
-            if obj_field:
-                data[key] = obj_field.id
-            elif id_field is not None:
-                data[key] = id_field
-            else:
-                data[key] = None
+        data["gate_id"] = self._get_fk_value(self._gate, self.gate_id)
+        data["captain_id"] = self._get_fk_value(self._captain, self.captain_id)
+        data["route_id"] = self._get_fk_value(self._route, self.route_id)
+        data["airplane_id"] = self._get_fk_value(self._airplane, self.airplane_id)
+        data["dispatcher_id"] = self._get_fk_value(self._dispatcher, self.dispatcher_id)
+        data["destination_id"] = self._get_fk_value(self._destination, self.destination_id)
 
-        save_fk(self.gate, self.gate_id, "gate_id")
-        save_fk(self.captain, self.captain_id, "captain_id")
-        save_fk(self.route, self.route_id, "route_id")
-        save_fk(self.airplane, self.airplane_id, "airplane_id")
-        save_fk(self.dispatcher, self.dispatcher_id, "dispatcher_id")
-        save_fk(self.destination, self.destination_id, "destination_id")
-
-        def save_many_fk(objs_list, ids_list, key):
-            current_ids: list[int] = [obj.id for obj in objs_list if obj.id is not None]
-
-            if not current_ids and ids_list:
-                current_ids = ids_list
-
-            data[key] = current_ids
-
-        save_many_fk(self.pilots, self.pilot_ids, "pilot_ids")
-        save_many_fk(self.attendants, self.attendant_ids, "attendant_ids")
-
-        for k in ["gate", "captain", "route", "airplane", "dispatcher", "destination", "pilots", "attendants"]:
-            data.pop(k, None)
+        data["pilot_ids"] = self._get_many_fk_value(self._pilots, self.pilot_ids)
+        data["attendant_ids"] = self._get_many_fk_value(self._attendants, self.attendant_ids)
 
         return data
 
@@ -136,27 +299,15 @@ class Flight(BaseModel):
 
         instance = cast(Flight, super().from_dict(data_copy))
 
-        def restore_fk(key, attr_name):
-            raw_val: Any = data.get(key)
-            val: int = int(raw_val) if raw_val is not None else None
-            setattr(instance, attr_name, val)
+        cls._restore_fk(instance, data, "gate_id", "gate_id")
+        cls._restore_fk(instance, data, "captain_id", "captain_id")
+        cls._restore_fk(instance, data, "route_id", "route_id")
+        cls._restore_fk(instance, data, "airplane_id", "airplane_id")
+        cls._restore_fk(instance, data, "dispatcher_id", "dispatcher_id")
+        cls._restore_fk(instance, data, "destination_id", "destination_id")
 
-        restore_fk("gate_id", "gate_id")
-        restore_fk("captain_id", "captain_id")
-        restore_fk("route_id", "route_id")
-        restore_fk("airplane_id", "airplane_id")
-        restore_fk("dispatcher_id", "dispatcher_id")
-        restore_fk("destination_id", "destination_id")
-
-        # Восстановление списков ID
-        def restore_many_fk(key, attr_name):
-            raw_ids: Any = data.get(key)
-            if isinstance(raw_ids, list):
-                clean_ids: list[int] = [int(x) for x in raw_ids if x is not None]
-                setattr(instance, attr_name, clean_ids)
-
-        restore_many_fk("pilot_ids", "pilot_ids")
-        restore_many_fk("attendant_ids", "attendant_ids")
+        cls._restore_many_fk(instance, data, "pilot_ids", "pilot_ids")
+        cls._restore_many_fk(instance, data, "attendant_ids", "attendant_ids")
 
         return instance
 
@@ -181,3 +332,14 @@ class Flight(BaseModel):
             self.available_seats -= count
             return True
         return False
+
+    def add_passenger(self, customer: Customer) -> None:
+        if self.available_seats > 0:
+            if self._customers is None: self._customers = []
+            self._customers.append(customer)
+            self.available_seats -= 1
+
+            if self not in customer.flights:
+                customer.flights.append(self)
+        else:
+            raise ValueError("No seats available")
