@@ -7,9 +7,7 @@ from ..models import Pilot
 
 class PilotRepository(AirlineStaffRepository[Pilot]):
     def __init__(self) -> None:
-        super().__init__(
-            model_cls=Pilot
-        )
+        super().__init__(model_cls=Pilot)
 
         self._flight_repo: FlightRepository | None = None
 

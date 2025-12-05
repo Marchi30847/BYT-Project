@@ -10,6 +10,4 @@ T = TypeVar('T', bound=Person)
 
 class PersonRepository(BaseRepository[T]):
     def __init__(self, model_cls: type[T]) -> None:
-        super().__init__(
-            model_cls=model_cls
-        )
+        super().__init__(model_cls=model_cls)

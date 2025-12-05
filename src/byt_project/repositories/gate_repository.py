@@ -9,9 +9,7 @@ from ..models import Gate
 
 class GateRepository(BaseRepository[Gate]):
     def __init__(self) -> None:
-        super().__init__(
-            model_cls=Gate
-        )
+        super().__init__(model_cls=Gate)
 
         self._flight_repo: FlightRepository | None = None
 

@@ -12,9 +12,7 @@ T = TypeVar('T', bound=Dispatcher)
 
 class DispatcherRepository(EmployeeRepository[Dispatcher]):
     def __init__(self) -> None:
-        super().__init__(
-            model_cls=Dispatcher
-        )
+        super().__init__(model_cls=Dispatcher)
 
         self._flight_repo: FlightRepository | None = None
         self._terminal_repo: TerminalRepository | None = None

@@ -11,9 +11,7 @@ T = TypeVar("T", bound=SecurityOfficer)
 
 class SecurityOfficerRepository(EmployeeRepository[T]):
     def __init__(self) -> None:
-        super().__init__(
-            model_cls=SecurityOfficer
-        )
+        super().__init__(model_cls=SecurityOfficer)
 
         self._incidents_repo: Incident | None = None
         self._terminal_repo: Terminal | None = None

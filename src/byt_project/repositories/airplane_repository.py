@@ -12,9 +12,7 @@ if TYPE_CHECKING:
 
 class AirplaneRepository(BaseRepository[Airplane]):
     def __init__(self) -> None:
-        super().__init__(
-            model_cls=Airplane
-        )
+        super().__init__(model_cls=Airplane)
         self._airline_repo: AirlineRepository | None = None
         self._flight_repo: FlightRepository | None = None
 

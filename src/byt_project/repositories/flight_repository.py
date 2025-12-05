@@ -18,10 +18,7 @@ if TYPE_CHECKING:
 
 class FlightRepository(BaseRepository[Flight]):
     def __init__(self) -> None:
-        super().__init__(
-            model_cls=Flight,
-            data_dir=Path("data/flights.json"),
-        )
+        super().__init__(model_cls=Flight)
         self._gate_repo: GateRepository | None = None
         self._pilot_repo: PilotRepository | None = None
         self._attendant_repo: AttendantRepository | None = None

@@ -8,7 +8,4 @@ from ..models import Destination
 
 class DestinationRepository(BaseRepository[Destination]):
     def __init__(self) -> None:
-        super().__init__(
-            model_cls=Destination,
-            data_dir=Path("data/Destinations.json"),
-        )
+        super().__init__(model_cls=Destination)

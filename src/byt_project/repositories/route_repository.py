@@ -8,7 +8,4 @@ from ..models import Route
 
 class RouteRepository(BaseRepository[Route]):
     def __init__(self) -> None:
-        super().__init__(
-            model_cls=Route,
-            data_dir=Path("data/routes.json"),
-        )
+        super().__init__(model_cls=Route)
