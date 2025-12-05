@@ -36,7 +36,3 @@ class Seat(BaseModel):
         # row_letter
         if not isinstance(self.row_letter, str) or not self.row_letter.strip():
             raise ValueError("row_letter must be a non-empty string")
-
-        # ticket (can be None or Ticket)
-        if self.ticket is not None and not isinstance(self.ticket, Ticket):
-            raise TypeError("ticket must be a Ticket instance or None")

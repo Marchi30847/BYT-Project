@@ -29,10 +29,6 @@ class Route(BaseModel):
         if self.destination is None:
             raise ValueError("destination cannot be None")
 
-        # flight
-        if self.flight is None:
-            raise ValueError("flight cannot be None")
-
         # duration
         if not isinstance(self.duration, (int, float)) or self.duration < 0:
             raise ValueError("duration must be a non-negative number")

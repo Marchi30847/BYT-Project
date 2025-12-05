@@ -44,25 +44,6 @@ class SecurityOfficer(Employee):
         if not isinstance(self.on_duty, bool):
             raise TypeError("on_duty must be a boolean")
 
-        # terminal_id
-        if self.terminal_id is not None and not isinstance(self.terminal_id, int):
-            raise TypeError("terminal_id must be int or None")
-
-        # manager_id
-        if self.manager_id is not None and not isinstance(self.manager_id, int):
-            raise TypeError("manager_id must be int or None")
-
-        # incident_ids - only list check
-        if not isinstance(self.incident_ids, list):
-            raise TypeError("incident_ids must be a list")
-
-        # _subordinates, _incidents — only check container type, not content
-        if self._subordinates is not None and not isinstance(self._subordinates, list):
-            raise TypeError("_subordinates must be a list or None")
-
-        if self._incidents is not None and not isinstance(self._incidents, list):
-            raise TypeError("_incidents must be a list or None")
-
     @property
     def terminal(self) -> Terminal | None:
         if self._terminal is not None:

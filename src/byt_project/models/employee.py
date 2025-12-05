@@ -36,13 +36,6 @@ class Employee(BaseModel):
         if not isinstance(self.salary, (int, float)) or self.salary < 0:
             raise ValueError("salary must be a non-negative number")
 
-        # shift must be a valid Shift enum
-        if not isinstance(self.shift, Shift):
-            raise TypeError("shift must be a Shift enum value")
-
-    def __post_init__(self) -> None:
-        super().__post_init__()
-
     def to_dict(self) -> dict[str, Any]:
         data = super().to_dict()
 

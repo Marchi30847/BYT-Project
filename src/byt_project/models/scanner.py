@@ -31,13 +31,6 @@ class Scanner(BaseModel):
         if not isinstance(self.avgScanTime, (int, float)) or self.avgScanTime <= 0:
             raise ValueError("avgScanTime must be a positive number")
 
-        # operators
-        if not isinstance(self.operators, list):
-            raise TypeError("operators must be a list")
-
-        for op in self.operators:
-            if not isinstance(op, ScannerOperator):
-                raise TypeError("all items in operators must be ScannerOperator instances")
 
     def addOperator(self, operator: ScannerOperator) -> None:
         self.operators.append(operator)

@@ -41,17 +41,6 @@ class Luggage(BaseModel):
         if not isinstance(self.isFragile, bool):
             raise TypeError("isFragile must be a boolean")
 
-        # securityStatus
-        if not isinstance(self.securityStatus, SecurityStatus):
-            raise TypeError("securityStatus must be a SecurityStatus enum value")
-
-        # ticket (required relation)
-        if self.ticket is None:
-            raise ValueError("ticket must not be None")
-
-        # Optional soft check: ensure ticket is correct type
-        if not isinstance(self.ticket, Ticket):
-            raise TypeError("ticket must be a Ticket instance")
 
     def checkIn(self):
         pass
