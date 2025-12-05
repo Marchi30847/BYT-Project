@@ -1,14 +1,15 @@
 from __future__ import annotations
 
-from pathlib import Path
+from typing import TypeVar
 
-from .base import BaseRepository
+from .person_repository import PersonRepository
 from ..models import Employee
 
+T = TypeVar('T', bound=Employee)
 
-class EmployeeRepository(BaseRepository[Employee]):
+
+class EmployeeRepository(PersonRepository[T]):
     def __init__(self) -> None:
         super().__init__(
-            model_cls=Employee,
-            data_dir=Path("data/employees.json"),
+            model_cls=T
         )

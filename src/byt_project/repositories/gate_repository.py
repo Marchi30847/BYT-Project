@@ -1,7 +1,8 @@
 from __future__ import annotations
 
-from pathlib import Path
+from typing import override
 
+from . import FlightRepository
 from .base import BaseRepository
 from ..models import Gate
 
@@ -9,6 +10,14 @@ from ..models import Gate
 class GateRepository(BaseRepository[Gate]):
     def __init__(self) -> None:
         super().__init__(
-            model_cls=Gate,
-            data_dir=Path("data/gates.json"),
+            model_cls=Gate
         )
+
+        self._flight_repo: FlightRepository | None = None
+
+    def set_flight_repo(self, flight_repo: FlightRepository) -> None:
+        self._flight_repo = flight_repo
+
+    @override
+    def _inject_dependencies(self, obj: Gate) -> None:
+        obj.set_loader("flights", self._flight_repo.find_all_by_gate_id)

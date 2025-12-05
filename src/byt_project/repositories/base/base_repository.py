@@ -71,6 +71,9 @@ class BaseRepository(Generic[T]):
         with meta_path.open("w", encoding="utf-8") as f:
             json.dump(meta, f, indent=2, ensure_ascii=False)
 
+    def _inject_dependencies(self, rows: list[dict]) -> None:
+        ...
+
     def create(self, obj: T) -> T:
         rows: list[dict[str, Any]] = self._load_rows()
 
@@ -88,14 +91,23 @@ class BaseRepository(Generic[T]):
         rows: list[dict[str, Any]] = self._load_rows()
         for row in rows:
             if row.get("id") == obj_id:
-                return self.model_cls.from_dict(row)
+                object: T = self.model_cls.from_dict(row)
+
+                self._inject_dependencies(object)
+
+                return object
 
         return None
 
     def find_all(self) -> list[T]:
         rows: list[dict[str, Any]] = self._load_rows()
 
-        return [self.model_cls.from_dict(r) for r in rows]
+        objects: list[T] = [self.model_cls.from_dict(r) for r in rows]
+
+        for obj in objects:
+            self._inject_dependencies(obj)
+
+        return objects
 
     def update(self, obj: T) -> T | None:
         if obj.id is None:

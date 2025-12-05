@@ -13,5 +13,17 @@ class FlightRepository(BaseRepository[Flight]):
             data_dir=Path("data/flights.json"),
         )
 
-    def find_all_by_airplane_id(self, airline_id: int) -> list[Flight]:
+    def find_all_by_attendant_id(self, airline_id: int) -> list[Flight]:
+        pass
+
+    def find_all_by_airplane_ids(self, airplane_ids: list[int]) -> list[Flight]:
+        pass
+
+    def find_all_by_dispatcher_id(self, dispatcher_id: int) -> list[Flight]:
+        pass
+
+    def find_all_by_pilot_ids(self, pilot_ids: list[int]) -> list[Flight]:
+        pass
+
+    def find_all_by_gate_id(self, gate_id: int) -> list[Flight]:
         pass
