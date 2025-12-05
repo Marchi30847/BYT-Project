@@ -28,6 +28,38 @@ class Airplane(BaseModel):
 
     max_service_years: ClassVar[int] = 30
 
+    def __post_init__(self) -> None:
+        super().__post_init__()
+
+        # model
+        if not isinstance(self.model, str) or not self.model.strip():
+            raise ValueError("model must be a non-empty string")
+
+        # manufacturer
+        if not isinstance(self.manufacturer, str) or not self.manufacturer.strip():
+            raise ValueError("manufacturer must be a non-empty string")
+
+        # capacity
+        if not isinstance(self.capacity, int) or self.capacity <= 0:
+            raise ValueError("capacity must be a positive integer")
+
+        # max_luggage_weight
+        if not isinstance(self.max_luggage_weight, (int, float)) or self.max_luggage_weight <= 0:
+            raise ValueError("max_luggage_weight must be a positive number")
+
+        # year_of_manufacture
+        if not isinstance(self.year_of_manufacture, int):
+            raise TypeError("year_of_manufacture must be an integer")
+
+        current_year = datetime.now().year
+        if not (1900 <= self.year_of_manufacture <= current_year):
+            raise ValueError("year_of_manufacture must be between 1900 and the current year")
+
+        # airline_id
+        if self.airline_id is not None and not isinstance(self.airline_id, int):
+            raise TypeError("airline_id must be int or None")
+
+
     @property
     def airline(self) -> Airline | None:
         if self._airline is not None:

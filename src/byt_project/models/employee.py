@@ -21,6 +21,24 @@ class Employee(BaseModel):
     salary: float
     shift: Shift
 
+    def __post_init__(self) -> None:
+        super().__post_init__()
+
+        # hire_date must be a date object
+        if not isinstance(self.hire_date, date):
+            raise TypeError("hire_date must be a date object")
+
+        # hire_date cannot be in the future
+        if self.hire_date > date.today():
+            raise ValueError("hire_date cannot be in the future")
+
+        # salary must be positive
+        if not isinstance(self.salary, (int, float)) or self.salary < 0:
+            raise ValueError("salary must be a non-negative number")
+
+        # shift must be a valid Shift enum
+        if not isinstance(self.shift, Shift):
+            raise TypeError("shift must be a Shift enum value")
 
     def __post_init__(self) -> None:
         super().__post_init__()

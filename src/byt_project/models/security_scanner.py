@@ -20,5 +20,22 @@ class SecurityScanner(Scanner):
     scannedLuggage: list[CarryOnLuggage]
 
     def __post_init__(self) -> None:
-        if self.xray_intensity < 0 or self.xray_intensity > 1:
-            raise ValueError("Xray intensity must be between 0 and 1")
+        super().__post_init__()
+
+        # xray_intensity: must be between 0 and 1
+        if not isinstance(self.xray_intensity, (int, float)):
+            raise TypeError("SecurityScanner.xray_intensity must be a number")
+
+        if not (0 <= self.xray_intensity <= 1):
+            raise ValueError("SecurityScanner.xray_intensity must be between 0 and 1")
+
+        # supports_3d_scan
+        if not isinstance(self.supports_3d_scan, bool):
+            raise TypeError("SecurityScanner.supports_3d_scan must be a boolean")
+
+        # scannedLuggage list
+        for item in self.scannedLuggage:
+            if not isinstance(item, CarryOnLuggage):
+                raise TypeError(
+                    "All items in SecurityScanner.scannedLuggage must be CarryOnLuggage instances"
+                )

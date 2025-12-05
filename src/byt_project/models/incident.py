@@ -18,7 +18,22 @@ class Incident(BaseModel):
     type: IncidentType
     luggage: Luggage
 
-    #todo fix this
-    @classmethod
-    def createIncident(self, desc, type, luggage):
-        return Incident(desc, type, luggage)
+    def __post_init__(self) -> None:
+        super().__post_init__()
+
+        # description
+        if not isinstance(self.description, str) or not self.description.strip():
+            raise ValueError("description must be a non-empty string")
+
+        # type
+        if not isinstance(self.type, IncidentType):
+            raise TypeError("type must be an IncidentType enum value")
+
+        # luggage
+        if self.luggage is None:
+            raise ValueError("luggage cannot be None")
+
+        if not isinstance(self.luggage, Luggage):
+            raise TypeError("luggage must be a Luggage instance")
+
+

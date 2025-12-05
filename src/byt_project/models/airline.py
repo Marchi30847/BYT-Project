@@ -29,6 +29,34 @@ class Airline(BaseModel):
 
     max_delay_compensation: ClassVar[float] = 0.40
 
+    def __post_init__(self) -> None:
+        super().__post_init__()
+
+        # name
+        if not isinstance(self.name, str) or not self.name.strip():
+            raise ValueError("name must be a non-empty string")
+
+        # country
+        if not isinstance(self.country, str) or not self.country.strip():
+            raise ValueError("country must be a non-empty string")
+
+        # alliance
+        if self.alliance is not None and not isinstance(self.alliance, str):
+            raise TypeError("alliance must be a string or None")
+
+        # IATA code: 2 letters
+        if not isinstance(self.iata_code, str) or len(self.iata_code) != 2:
+            raise ValueError("iata_code must be exactly 2 characters")
+        # no strict alpha enforcement — чтобы не усложнять
+
+        # ICAO code: 3 letters
+        if not isinstance(self.icao_code, str) or len(self.icao_code) != 3:
+            raise ValueError("icao_code must be exactly 3 characters")
+
+        # parent_company_id
+        if self.parent_company_id is not None and not isinstance(self.parent_company_id, int):
+            raise TypeError("parent_company_id must be int or None")
+
     @property
     def parent_company(self) -> Airline | None:
         if self._parent_company is not None:

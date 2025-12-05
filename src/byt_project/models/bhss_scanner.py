@@ -19,3 +19,19 @@ class BHSSScanner(Scanner):
     isAutoSortEnabled: bool
 
     scannedLuggage: list[CheckedInLuggage]
+
+    def __post_init__(self) -> None:
+        super().__post_init__()
+
+        # belt_id
+        if not isinstance(self.belt_id, int) or self.belt_id <= 0:
+            raise ValueError("belt_id must be a positive integer")
+
+        # maxThroughput
+        if not isinstance(self.maxThroughput, int) or self.maxThroughput <= 0:
+            raise ValueError("maxThroughput must be a positive integer")
+
+        # isAutoSortEnabled
+        if not isinstance(self.isAutoSortEnabled, bool):
+            raise TypeError("isAutoSortEnabled must be a boolean")
+

@@ -25,3 +25,18 @@ class Seat(BaseModel):
 
     def is_available(self) -> bool:
         return self.ticket is None
+
+    def __post_init__(self) -> None:
+        super().__post_init__()
+
+        # number
+        if not isinstance(self.number, int) or self.number <= 0:
+            raise ValueError("number must be a positive integer")
+
+        # row_letter
+        if not isinstance(self.row_letter, str) or not self.row_letter.strip():
+            raise ValueError("row_letter must be a non-empty string")
+
+        # ticket (can be None or Ticket)
+        if self.ticket is not None and not isinstance(self.ticket, Ticket):
+            raise TypeError("ticket must be a Ticket instance or None")

@@ -65,3 +65,37 @@ class Ticket(BaseModel):
         d = super().to_dict()
         d["booking_date"] = self.booking_date.isoformat()
         return d
+
+    def __post_init__(self) -> None:
+        super().__post_init__()
+
+        if not isinstance(self.type, str) or not self.type.strip():
+            raise ValueError("Ticket.type must be a non-empty string")
+
+        if not isinstance(self.price, (int, float)) or self.price < 0:
+            raise ValueError("Ticket.price must be a non-negative number")
+
+        if not isinstance(self.booking_date, datetime):
+            raise TypeError("Ticket.booking_date must be a datetime object")
+
+        if not isinstance(self.luggage_limit, (int, float)) or self.luggage_limit < 0:
+            raise ValueError("Ticket.luggage_limit must be a non-negative number")
+
+        from .seat import Seat
+        if not isinstance(self.seat, Seat):
+            raise TypeError("Ticket.seat must be a Seat instance")
+
+        from .luggage import Luggage
+        if not isinstance(self.luggage, list):
+            raise TypeError("Ticket.luggage must be a list")
+
+        for item in self.luggage:
+            if not isinstance(item, Luggage):
+                raise TypeError("Every item in Ticket.luggage must be a Luggage instance")
+
+        from .flight import Flight
+        if self.flight is not None and not isinstance(self.flight, Flight):
+            raise TypeError("Ticket.flight must be a Flight instance or None")
+
+        if not isinstance(self.is_flagged, bool):
+            raise TypeError("Ticket.is_flagged must be a boolean")

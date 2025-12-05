@@ -18,6 +18,24 @@ class Attendant(AirlineStaff):
 
     _flights: list[Flight] | None = field(default=None, init=False, repr=False)
 
+    def __post_init__(self) -> None:
+        super().__post_init__()
+
+        # is_training_completed
+        if not isinstance(self.is_training_completed, bool):
+            raise TypeError("is_training_completed must be a boolean")
+
+        # languages
+        if not isinstance(self.languages, list):
+            raise TypeError("languages must be a list")
+
+        if len(self.languages) < 2:
+            raise ValueError("Attendant must know at least two languages")
+
+        for lang in self.languages:
+            if not isinstance(lang, str) or not lang.strip():
+                raise ValueError("All languages must be non-empty strings")
+
     @property
     def flights(self) -> list[Flight]:
         if self._flights is not None:

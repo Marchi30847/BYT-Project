@@ -16,6 +16,18 @@ class AirlineStaff(Employee):
     airline_id: int | None = field(default=None, init=False)
     _airline: Airline | None = field(default=None, init=False, repr=False)
 
+    def __post_init__(self) -> None:
+        super().__post_init__()
+
+        # airline_id — simple structural validation
+        if self.airline_id is not None and not isinstance(self.airline_id, int):
+            raise TypeError("airline_id must be an integer or None")
+
+        # _airline — lazy-loaded value
+        if self._airline is not None:
+            if not isinstance(self._airline, Airline):
+                raise TypeError("_airline must be an Airline instance or None")
+
     @property
     def airline(self) -> Airline | None:
         if self._airline is not None:

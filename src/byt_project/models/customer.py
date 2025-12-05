@@ -19,6 +19,17 @@ class Customer(Person):
     flight_ids: list[int] = field(default_factory=list, init=False)
     _flights: list[Flight] | None = field(default=None, init=False, repr=False)
 
+    def __post_init__(self) -> None:
+        super().__post_init__()
+
+        # email
+        if not isinstance(self.email, str) or not self.email.strip():
+            raise ValueError("email must be a non-empty string")
+
+        # phone_number
+        if not isinstance(self.phone_number, str) or not self.phone_number.strip():
+            raise ValueError("phone_number must be a non-empty string")
+
     @property
     def flights(self) -> list[Flight]:
         if self._flights is not None:
