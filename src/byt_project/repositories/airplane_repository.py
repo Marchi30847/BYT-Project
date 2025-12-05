@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from .base.base_repository import BaseRepository
 from ..models.airplane import Airplane
@@ -27,6 +27,7 @@ class AirplaneRepository(BaseRepository[Airplane]):
     def set_flight_repo(self, repo: FlightRepository) -> None:
         self._flight_repo = repo
 
+    @override
     def find_by_id(self, obj_id: int) -> Airplane | None:
         airplane: Airplane = super().find_by_id(obj_id)
 
@@ -35,6 +36,7 @@ class AirplaneRepository(BaseRepository[Airplane]):
 
         return airplane
 
+    @override
     def find_all(self) -> list[Airplane]:
         airplanes: list[Airplane] = super().find_all()
 
@@ -42,6 +44,11 @@ class AirplaneRepository(BaseRepository[Airplane]):
             self._hydrate(plane)
 
         return airplanes
+
+    def find_all_by_airline_id(self, airline_id: int) -> list[Airplane]:
+        airplanes: list[Airplane] = self.find_all()
+        filtered_airplanes: list[Airplane] = list(filter(lambda airplane: airplane.id == airline_id, airplanes))
+        return filtered_airplanes
 
     def _hydrate(self, airplane: Airplane) -> None:
         if self._airline_repo and airplane.airline_id is not None:
