@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import override, Type
+from typing import override
 
 from . import FlightRepository
 from .person_repository import PersonRepository
