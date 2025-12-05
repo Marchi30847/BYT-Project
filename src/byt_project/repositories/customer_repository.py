@@ -1,17 +1,15 @@
 from __future__ import annotations
 
-from typing import TypeVar, override, Type
+from typing import override, Type
 
 from . import FlightRepository
 from .person_repository import PersonRepository
-from ..models import Employee, Customer
-
-T = TypeVar('T', bound=Employee)
+from ..models import Customer
 
 
-class CustomerRepository(PersonRepository[T]):
-    def __init__(self, model_cls: Type[T]) -> None:
-        super().__init__(model_cls=model_cls)
+class CustomerRepository(PersonRepository[Customer]):
+    def __init__(self) -> None:
+        super().__init__(model_cls=Customer)
 
         self._flight_repo: FlightRepository | None = None
 

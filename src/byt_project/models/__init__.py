@@ -17,7 +17,6 @@ from .attendant import Attendant
 from .dispatcher import Dispatcher
 from .security_officer import SecurityOfficer
 from .scanner_operator import ScannerOperator
-from .scanner_security_officer import ScannerSecurityOfficer
 
 from .terminal import Terminal
 from .gate import Gate
@@ -53,7 +52,6 @@ __all__ = [
     "Dispatcher",
     "SecurityOfficer",
     "ScannerOperator",
-    "ScannerSecurityOfficer",
 
     "Terminal",
     "Gate",
@@ -65,5 +63,4 @@ __all__ = [
     "Scanner",
     "SecurityScanner",
     "BHSSScanner",
-    "incident.py",
 ]

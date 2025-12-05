@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, field, fields
+from dataclasses import dataclass, field
 from typing import ClassVar, Any, TYPE_CHECKING, cast
 
 from .employee import Employee

@@ -3,7 +3,6 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import ClassVar, TYPE_CHECKING
 
-from .base import BaseModel
 from .scanner import Scanner
 
 if TYPE_CHECKING:

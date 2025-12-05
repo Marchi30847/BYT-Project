@@ -11,6 +11,7 @@ if TYPE_CHECKING:
 class DestinationRepository(BaseRepository[Destination]):
     def __init__(self) -> None:
         super().__init__(model_cls=Destination)
+
         self._flight_repo: FlightRepository | None = None
 
     def set_flight_repo(self, repo: FlightRepository) -> None:
