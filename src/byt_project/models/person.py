@@ -38,9 +38,6 @@ class Person(BaseModel):
         if not isinstance(self.dateOfBirth, date):
             raise TypeError("dateOfBirth must be a date object")
 
-        # date must be in the past
-        if self.dateOfBirth >= date.today():
-            raise ValueError("dateOfBirth must be a past date")
 
         # gender — simple non-empty string
         if not isinstance(self.gender, str) or not self.gender.strip():

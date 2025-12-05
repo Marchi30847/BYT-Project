@@ -42,9 +42,14 @@ class BaseModel(Serializable):
 
         return id_field_val
 
-    def _get_many_fk_value(self, objs_list: list[Any], ids_list: list[int]) -> list[int]:
-        current_ids: list[int] = [obj.id for obj in objs_list if
-                                  obj is not None and getattr(obj, "id", None) is not None]
+    def _get_many_fk_value(self, objs_list: list[Any] | None, ids_list: list[int]) -> list[int]:
+        if objs_list is None:
+            return ids_list
+
+        current_ids: list[int] = [
+            obj.id for obj in objs_list
+            if obj is not None and getattr(obj, "id", None) is not None
+        ]
 
         if not current_ids and ids_list:
             return ids_list

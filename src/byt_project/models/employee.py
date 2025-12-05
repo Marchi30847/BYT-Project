@@ -5,6 +5,7 @@ from datetime import date
 from enum import Enum
 from typing import ClassVar, Any, cast
 
+from . import Person
 from .base import BaseModel
 
 
@@ -14,7 +15,7 @@ class Shift(Enum):
 
 
 @dataclass(kw_only=True)
-class Employee(BaseModel):
+class Employee(Person):
     MODEL_TYPE: ClassVar[str] = "employee"
 
     hire_date: date

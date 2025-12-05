@@ -1,10 +1,12 @@
 from __future__ import annotations
 
-from typing import override
+from typing import override, TYPE_CHECKING
 
-from . import FlightRepository
 from .person_repository import PersonRepository
 from ..models import Customer
+
+if TYPE_CHECKING:
+    from . import FlightRepository
 
 
 class CustomerRepository(PersonRepository[Customer]):
