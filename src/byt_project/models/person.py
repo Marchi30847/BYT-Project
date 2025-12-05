@@ -54,11 +54,8 @@ class Person(BaseModel):
         if not isinstance(self.passportNumber, str) or not self.passportNumber.strip():
             raise ValueError("passportNumber must be a non-empty string")
 
-    def __post_init__(self) -> None:
-        super().__post_init__()
-
     def to_dict(self) -> dict[str, Any]:
-        data = super().to_dict()
+        data: dict[str, Any] = super().to_dict()
 
         data["dateOfBirth"] = self.dateOfBirth.isoformat()
 
@@ -66,7 +63,7 @@ class Person(BaseModel):
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> Person:
-        data_copy = dict(data)
+        data_copy: dict[str, Any] = dict(data)
 
         raw_dob: Any = data_copy.get("dateOfBirth")
         if isinstance(raw_dob, str):

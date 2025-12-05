@@ -22,18 +22,6 @@ class Dispatcher(AirlineStaff):
 
     _flights: list[Flight] | None = field(default=None, init=False, repr=False)
 
-    def __post_init__(self) -> None:
-        super().__post_init__()
-
-        # specialization
-        if not isinstance(self.specialization, str) or not self.specialization.strip():
-            raise ValueError("specialization must be a non-empty string")
-
-        # certification_level
-        if not isinstance(self.certification_level, int) or self.certification_level < 0:
-            raise ValueError("certification_level must be a non-negative integer")
-
-
     @property
     def terminal(self) -> Terminal | None:
         if self._terminal is not None:
@@ -77,6 +65,14 @@ class Dispatcher(AirlineStaff):
 
     def __post_init__(self) -> None:
         super().__post_init__()
+
+        # specialization
+        if not isinstance(self.specialization, str) or not self.specialization.strip():
+            raise ValueError("specialization must be a non-empty string")
+
+        # certification_level
+        if not isinstance(self.certification_level, int) or self.certification_level < 0:
+            raise ValueError("certification_level must be a non-negative integer")
 
     def to_dict(self) -> dict[str, Any]:
         data: dict[str, Any] = super().to_dict()

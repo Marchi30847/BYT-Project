@@ -25,18 +25,6 @@ class Pilot(AirlineStaff):
 
     _flights: list[Flight] | None = field(default=None, init=False, repr=False)
 
-    def __post_init__(self) -> None:
-        super().__post_init__()
-
-        # licence_number
-        if not isinstance(self.licence_number, str) or not self.licence_number.strip():
-            raise ValueError("licence_number must be a non-empty string")
-
-        # flight_hours
-        if not isinstance(self.flight_hours, int) or self.flight_hours < 0:
-            raise ValueError("flight_hours must be a non-negative integer")
-
-
     @property
     def flights(self) -> list[Flight]:
         if self._flights is not None:
@@ -55,11 +43,20 @@ class Pilot(AirlineStaff):
     def flights(self, value: list[Flight]) -> None:
         self._flights = value
 
+
     def __post_init__(self) -> None:
         super().__post_init__()
 
+        # licence_number
+        if not isinstance(self.licence_number, str) or not self.licence_number.strip():
+            raise ValueError("licence_number must be a non-empty string")
+
+        # flight_hours
+        if not isinstance(self.flight_hours, int) or self.flight_hours < 0:
+            raise ValueError("flight_hours must be a non-negative integer")
+
     def to_dict(self) -> dict[str, Any]:
-        data = super().to_dict()
+        data: dict[str, Any] = super().to_dict()
 
         data["rank"] = self.rank.value
 

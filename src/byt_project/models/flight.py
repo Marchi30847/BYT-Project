@@ -40,27 +40,6 @@ class Flight(BaseModel):
     gate_id: int | None = field(default=None, init=False)
     _gate: Gate | None = field(default=None, init=False, repr=False)
 
-    def __post_init__(self) -> None:
-        super().__post_init__()
-
-        # flight_number
-        if not isinstance(self.flight_number, str) or not self.flight_number.strip():
-            raise ValueError("flight_number must be a non-empty string")
-
-        # departure_time
-        if not isinstance(self.departure_time, datetime):
-            raise TypeError("departure_time must be a datetime object")
-
-        # arrival_time (optional)
-        if self.arrival_time is not None and not isinstance(self.arrival_time, datetime):
-            raise TypeError("arrival_time must be a datetime or None")
-
-
-        # available_seats (will be overwritten later anyway)
-        if not isinstance(self.available_seats, int) or self.available_seats < 0:
-            raise ValueError("available_seats must be a non-negative integer")
-
-
     @property
     def gate(self) -> Gate | None:
         if self._gate is not None:
@@ -275,10 +254,21 @@ class Flight(BaseModel):
     def __post_init__(self) -> None:
         super().__post_init__()
 
-        if self._airplane:
-            self.available_seats = self._airplane.capacity
-        else:
-            self.available_seats = 0
+        # flight_number
+        if not isinstance(self.flight_number, str) or not self.flight_number.strip():
+            raise ValueError("flight_number must be a non-empty string")
+
+        # departure_time
+        if not isinstance(self.departure_time, datetime):
+            raise TypeError("departure_time must be a datetime object")
+
+        # arrival_time (optional)
+        if self.arrival_time is not None and not isinstance(self.arrival_time, datetime):
+            raise TypeError("arrival_time must be a datetime or None")
+
+        # available_seats (will be overwritten later anyway)
+        if not isinstance(self.available_seats, int) or self.available_seats < 0:
+            raise ValueError("available_seats must be a non-negative integer")
 
     def to_dict(self) -> dict[str, Any]:
         data: dict[str, Any] = super().to_dict()

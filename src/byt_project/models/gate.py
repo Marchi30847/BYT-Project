@@ -22,17 +22,6 @@ class Gate(BaseModel):
 
     _flights: list[Flight] | None = field(default=None, init=False, repr=False)
 
-    def __post_init__(self) -> None:
-        super().__post_init__()
-
-        # number
-        if not isinstance(self.number, int) or self.number <= 0:
-            raise ValueError("number must be a positive integer")
-
-        # is_open
-        if not isinstance(self.is_open, bool):
-            raise TypeError("is_open must be a boolean")
-
     @property
     def terminal(self) -> Terminal | None:
         if self._terminal is not None:
@@ -77,6 +66,14 @@ class Gate(BaseModel):
     def __post_init__(self) -> None:
         super().__post_init__()
 
+        # number
+        if not isinstance(self.number, int) or self.number <= 0:
+            raise ValueError("number must be a positive integer")
+
+        # is_open
+        if not isinstance(self.is_open, bool):
+            raise TypeError("is_open must be a boolean")
+
     def to_dict(self) -> dict[str, Any]:
         data: dict[str, Any] = super().to_dict()
 
@@ -86,7 +83,9 @@ class Gate(BaseModel):
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> Gate:
-        instance = cast(Gate, super().from_dict(data))
+        data_copy: dict[str, Any] = dict(data)
+
+        instance = cast(Gate, super().from_dict(data_copy))
 
         cls._restore_fk(instance, data, "terminal_id", "terminal_id")
 

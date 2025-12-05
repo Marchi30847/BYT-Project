@@ -52,7 +52,7 @@ class ScannerOperator(Employee):
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> ScannerOperator:
-        data_copy = dict(data)
+        data_copy: dict[str, Any] = dict(data)
 
         instance = cast(ScannerOperator, super().from_dict(data_copy))
 

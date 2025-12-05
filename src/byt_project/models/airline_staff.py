@@ -16,9 +16,6 @@ class AirlineStaff(Employee):
     airline_id: int | None = field(default=None, init=False)
     _airline: Airline | None = field(default=None, init=False, repr=False)
 
-    def __post_init__(self) -> None:
-        super().__post_init__()
-
     @property
     def airline(self) -> Airline | None:
         if self._airline is not None:

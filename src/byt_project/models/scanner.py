@@ -59,43 +59,30 @@ class Scanner(BaseModel):
     def to_dict(self) -> dict[str, Any]:
         data: dict[str, Any] = super().to_dict()
 
-        # 1. Дату в ISO строку
         data["lastCalibration"] = self.lastCalibration.isoformat()
 
-        # 2. Сохраняем список ID операторов (M2M) через хелпер
         data["operator_ids"] = self._get_many_fk_value(self._operators, self.operator_ids)
-
-        # 3. Чистим приватный кэш
-        data.pop("_operators", None)
 
         return data
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> Scanner:
-        data_copy = dict(data)
+        data_copy: dict[str, Any] = dict(data)
 
-        # 1. Десериализация даты
         raw_calib: Any = data_copy.get("lastCalibration")
         if isinstance(raw_calib, str):
             data_copy["lastCalibration"] = datetime.fromisoformat(raw_calib)
 
-        # 2. Создание через родителя (BaseModel)
         instance = cast(Scanner, super().from_dict(data_copy))
 
-        # 3. Восстановление списка ID операторов
         cls._restore_many_fk(instance, data, "operator_ids", "operator_ids")
 
         return instance
 
-    # --- БИЗНЕС-ЛОГИКА ---
 
     def add_operator(self, operator: ScannerOperator) -> None:
-        """Добавляет оператора и синхронизирует списки."""
-        # Используем свойство, чтобы инициализировать кэш, если он пуст
         if operator not in self.operators:
             self.operators.append(operator)
 
-            # Поскольку мы обошли сеттер (использовали append),
-            # нужно синхронизировать список ID
             if operator.id is not None:
                 self.operator_ids.append(operator.id)

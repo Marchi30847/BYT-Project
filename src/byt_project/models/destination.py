@@ -27,29 +27,6 @@ class Destination(BaseModel):
 
     _flights: list[Flight] | None = field(default=None, init=False, repr=False)
 
-    def __post_init__(self) -> None:
-        # country
-        if not isinstance(self.country, str) or not self.country.strip():
-            raise ValueError("country must be a non-empty string")
-
-        # city
-        if not isinstance(self.city, str) or not self.city.strip():
-            raise ValueError("city must be a non-empty string")
-
-        # latitude
-        if not isinstance(self.latitude, (int, float)):
-            raise TypeError("latitude must be a number")
-
-        if not (-90 <= self.latitude <= 90):
-            raise ValueError("latitude must be between -90 and 90")
-
-        # longitude
-        if not isinstance(self.longitude, (int, float)):
-            raise TypeError("longitude must be a number")
-
-        if not (-180 <= self.longitude <= 180):
-            raise ValueError("longitude must be between -180 and 180")
-
     @property
     def flights(self) -> list[Flight]:
         if self._flights is not None:
@@ -70,7 +47,27 @@ class Destination(BaseModel):
 
 
     def __post_init__(self) -> None:
-        super().__post_init__()
+        # country
+        if not isinstance(self.location.country, str) or not self.location.country.strip():
+            raise ValueError("country must be a non-empty string")
+
+        # city
+        if not isinstance(self.location.city, str) or not self.location.city.strip():
+            raise ValueError("city must be a non-empty string")
+
+        # latitude
+        if not isinstance(self.location.latitude, (int, float)):
+            raise TypeError("latitude must be a number")
+
+        if not (-90 <= self.location.latitude <= 90):
+            raise ValueError("latitude must be between -90 and 90")
+
+        # longitude
+        if not isinstance(self.location.longitude, (int, float)):
+            raise TypeError("longitude must be a number")
+
+        if not (-180 <= self.location.longitude <= 180):
+            raise ValueError("longitude must be between -180 and 180")
 
     def to_dict(self) -> dict[str, Any]:
         data = super().to_dict()
