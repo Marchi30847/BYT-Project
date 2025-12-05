@@ -28,18 +28,15 @@ class Airline(BaseModel):
     max_delay_compensation: ClassVar[float] = 0.40
 
     def __post_init__(self) -> None:
+        super().__post_init__()
+
         if self.parent_company and getattr(self.parent_company, 'id', None) is not None:
             self.parent_company_id = self.parent_company.id
 
     def to_dict(self) -> dict[str, Any]:
         data: dict[str, Any] = super().to_dict()
 
-        if self.parent_company:
-            data["parent_company_id"] = self.parent_company.id
-        elif self.parent_company_id is not None:
-            data["parent_company_id"] = self.parent_company_id
-        else:
-            data["parent_company_id"] = None
+        data["parent_company_id"] = self._get_fk_value(self.parent_company, self.parent_company_id)
 
         data.pop("airplanes", None)
         data.pop("subcompanies", None)
@@ -51,7 +48,6 @@ class Airline(BaseModel):
     def from_dict(cls, data: dict[str, Any]) -> Airline:
         instance = cast(Airline, super().from_dict(data))
 
-        raw_parent_id: str | int | None = data.get("parent_company_id")
-        instance.parent_company_id = int(raw_parent_id) if raw_parent_id is not None else None
+        cls._restore_fk(instance, data, "parent_company_id", "parent_company_id")
 
         return instance
